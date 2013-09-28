@@ -16,6 +16,11 @@
 #include <net/if.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <fcntl.h>
+#include <sys/epoll.h>
+
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
 
 #include "senser_protocol.h"
 
@@ -48,5 +53,5 @@ int get_device_info(device_info *);
 void print_packet(const unsigned char *);
 void *receiver(void *);
 int check_reply_packet(const unsigned char *, struct pcap_pkthdr *, unsigned char *, NodeStatus *);
-
+void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_statu);
 #endif
