@@ -233,13 +233,50 @@ void *receiver(void *arg)
 		if (pcap_next_ex(p_descr, &p_pkthdr, &p_packet) != 1) {
 			continue;
 		}
-
-		check_reply_packet(p_packet, p_pkthdr, source_ip, p_node_status);
+		confirmNodeTraffic(p_packet, p_pkthdr, source_ip, p_node_status);
+		//check_reply_packet(p_packet, p_pkthdr, source_ip, p_node_status);
 	}
 
 	return 0;
 }
+void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_statu){
 
+	etherhdr_t *ether = (etherhdr_t*) (packet);
+	if(ntohs(ether->h_proto) == 0x0800){
+		struct ip *iphdr = (struct ip*) (packet+ sizeof(etherhdr_t));
+		struct tcphdr *tcp = (struct tcphdr*) (packet+ sizeof(etherhdr_t) + sizeof(struct ip));
+
+		unsigned char c_src_ip[4] = {0,};
+		unsigned char c_dst_ip[4] = {0,};
+		u_int n_ip_temp;
+		u_char *p_c_ip;
+		
+		n_ip_temp = *((unsigned int*)(&(iphdr->ip_src)));		//Cu¹o?E?.
+		p_c_ip = (u_char*) (&n_ip_temp);
+		memcpy(&c_src_ip, p_c_ip, 4);
+
+		n_ip_temp = *((unsigned int*)(&(iphdr->ip_dst)));		//Cu¹o?E?.
+		p_c_ip = (u_char*) (&n_ip_temp);
+		memcpy(&c_dst_ip, p_c_ip, 4);
+		
+		//printf("tcp dest port: %d\n", ntohs(tcp->dest));
+		char result[1000];
+		
+		if(c_src_ip[0] == 210 && c_src_ip[1] == 118 && c_src_ip[2] == 34){
+			sprintf(result,"!@%d.%d.%d.%d&%d&u%d&%d.%d.%d.%d", c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3], ntohs(tcp->dest), pkthdr.len, c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3]);
+			
+		// printf("%d ", *((u_char*)(&n_ip_temp)+i) );
+		}
+		else{
+			sprintf(result,"!@%d.%d.%d.%d&%d&d%d&%d.%d.%d.%d", c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3], ntohs(tcp->source), pkthdr.len, c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3]);
+			
+		}
+
+		printf("%s\n", result);
+
+	}
+
+}
 int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_status)
 {
 	// etherhdr_t *ether = (etherhdr_t*)(packet);
