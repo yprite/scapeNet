@@ -86,9 +86,6 @@ int main(void)
 						char tmp[100];
 						buffer[strlen(buffer)-1] = '\0';
 						printf("read face : %s\n", buffer);
-						writen = write(pipeFd[3],buffer,strlen(buffer));
-						printf("write sense message : %s\n", buffer);
-						printf("write buffer byte : %d\n", writen);
 					}
 					else printf("read error!\n");
 				}
