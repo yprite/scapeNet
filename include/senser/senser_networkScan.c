@@ -29,7 +29,7 @@ void *networkScan(void *arg)
 	}
 
 	/* Compiles the filter expression into a BPF filter program */ 
-	if ( pcap_compile(descr, &filter, "arp", 1, mask) == -1){
+	if ( pcap_compile(descr, &filter, "tcp or arp", 1, mask) == -1){
 		fprintf(stderr, "3ERROR: %s\n", pcap_geterr(descr) );
 		exit(1);
 	}
