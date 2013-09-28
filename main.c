@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
-#define EPOLL_SIZEi 20
+#define EPOLL_SIZE 20
 #define BUFFER_SIZE 255
 
 int main(void)
