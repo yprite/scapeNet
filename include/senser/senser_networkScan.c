@@ -13,6 +13,7 @@ void *networkScan(void *arg)
 	pthread_t t_id = 0;
 	int state = 0;
 	grub_args grub;
+	int i;
 
 	memset(errbuf,0,PCAP_ERRBUF_SIZE); 
 
@@ -47,7 +48,6 @@ void *networkScan(void *arg)
 	grub.p_descr = descr;
 	grub.p_node_status = node_status;
 	memcpy( (char*)&grub+8, (unsigned char*)&dev_info+6, 4);
-	// grub.source_ip = (unsigned char*)&dev_info+6;
 
 	state = pthread_create(&t_id, NULL, receiver, &grub);
 	puts("thread start");
@@ -57,10 +57,31 @@ void *networkScan(void *arg)
 	}
 	puts("thread start2");
 	// sleep(5);
-	send_arp_packet(descr, dev_info);
+	while(1) {
+		memset(node_status, 0, sizeof(NodeStatus));
+
+		send_arp_packet(descr, dev_info);
+		
+		sleep(1);
+		printf("network node status!!!!\n");
+		for(i=1; i<255; i++) {
+			if(node_status->node[i].status == 1) {
+				printf("%6d", i);
+			} else {
+				printf("%6d", 0);
+			}
+
+			if(i%15 == 0)
+				puts("");
+		}
+		puts("");
+
+
+
+		sleep(30);
+	}
 	puts("thread start3");
 
-	sleep(1);
 	printf("main function exit\n");
 	return 0;
 }
@@ -205,10 +226,9 @@ int get_device_info(device_info *p_dev_info)
 
 void *receiver(void *arg)
 {
-	// int i;
+	int pipeFd;
 	const unsigned char *p_packet = 0;
 	struct pcap_pkthdr *p_pkthdr = 0;
-	
 
 	grub_args *grub = (grub_args*)arg;
 	pcap_t *p_descr = grub->p_descr;
@@ -216,39 +236,66 @@ void *receiver(void *arg)
 	unsigned char *source_ip = 0;	
 	source_ip = grub->source_ip;
 
-//volatile		//xx
-//restrict
-
-	// printf("descr = %p\n", p_descr);
-	// printf("node_status = %p\n", p_node_status);
-	// printf("node_status = %d\n", &p_node_status);
-	// &p_node_status;
-	/*for(i=0; i<4; i++) {
-		printf("%d ", source_ip[i]);
-	}
-	puts("");*/
-	// sleep(1);
+	
 
 	while(1){
 		if (pcap_next_ex(p_descr, &p_pkthdr, &p_packet) != 1) {
 			continue;
 		}
-		confirmNodeTraffic(p_packet, p_pkthdr, source_ip, p_node_status);
-		//check_reply_packet(p_packet, p_pkthdr, source_ip, p_node_status);
+
+		if ((pipeFd = open(".read_sense", O_RDWR)) < 0) {
+			perror("fail to call open()");
+			exit(1);
+		}
+
+		confirmNodeTraffic(p_packet, p_pkthdr, source_ip, pipeFd);
+		check_reply_packet(p_packet, p_pkthdr, source_ip, p_node_status, pipeFd);
+
+		close(pipeFd);
 	}
 
 	return 0;
 }
-void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_statu){
 
-	int pipeFd;
+int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_status, int pipeFd)
+{
+	// etherhdr_t *ether = (etherhdr_t*)(packet);
+	arphdr_t *arpheader = (struct arphdr *)(packet+14); /* Point to the ARP header */
+	char result[1024] = {0,};
 	int writen;
+	int i=0;
+	
+	if(ntohs(arpheader->oper) == ARP_REQUEST)
+		return 0;
 
-	if ((pipeFd = open(".read_sense", O_RDWR)) < 0) {
-		perror("fail to call open()");
-		exit(1);
+	if(memcmp(arpheader->tpa, source_ip, 4) != 0)
+		return 0;
+
+
+	/* If is Ethernet and IPv4, print packet contents */ 
+	if (ntohs(arpheader->htype) == 1 && ntohs(arpheader->ptype) == 0x0800){ 
+		
+		printf("\nSender IP: "); 
+		for(i=0; i<4;i++)
+			printf("%d.", arpheader->spa[i]);
+
+		p_node_status->node[arpheader->spa[3]].status = 1;
+
+		sprintf(result,"!~%d.%d.%d.%d", arpheader->spa[0], arpheader->spa[1], arpheader->spa[2], arpheader->spa[3]);
+
 	}
 
+	if ((writen = write(pipeFd, result, strlen(result))) < 0) {
+		perror("write error");
+		exit(1);
+	}
+	return 1; 
+
+}
+
+void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, int pipeFd)
+{
+	int writen;
 
 	etherhdr_t *ether = (etherhdr_t*) (packet);
 	if(ntohs(ether->h_proto) == 0x0800){
@@ -286,91 +333,9 @@ void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr,
 			perror("write error");
 			exit(1);
 		}
-		close(pipeFd);
 	}
 
 }
-int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_status)
-{
-	// etherhdr_t *ether = (etherhdr_t*)(packet);
-	arphdr_t *arpheader = (struct arphdr *)(packet+14); /* Point to the ARP header */
-	int i=0;
-
-	if(ntohs(arpheader->oper) == ARP_REQUEST)
-		return 0;
-
-	if(memcmp(arpheader->tpa, source_ip, 4) != 0)
-		return 0;
-
-
-	/*puts("\n------Ethernet Headeer--------------------");
-	printf("source= ");
-	for(i=0; i<6;i++)
-		printf("%02X:", ether->h_source[i]);
-
-	printf("\ndest= ");
-	for(i=0; i<6;i++)
-		printf("%02X:", ether->h_dest[i]);
-
-	printf("\nproto = %04x\n", ntohs(ether->h_proto));
-	puts("------arp Header--------------");
-
-	printf("Received Packet Size: %d bytes\n", pkthdr->len); 
-	printf("Hardware type: %s\n", (ntohs(arpheader->htype) == 1) ? "Ethernet" : "Unknown"); 
-	printf("Protocol type: %s\n", (ntohs(arpheader->ptype) == 0x0800) ? "IPv4" : "Unknown"); 
-	printf("Operation: %s\n", (ntohs(arpheader->oper) == ARP_REQUEST)? "ARP Request" : "ARP Reply");
-
-	
-	printf("hlen: %02x\n", arpheader->hlen);
-	printf("plen: %02x\n", arpheader->plen);*/
-
-	/* If is Ethernet and IPv4, print packet contents */ 
-	if (ntohs(arpheader->htype) == 1 && ntohs(arpheader->ptype) == 0x0800){ 
-		/*printf("Sender MAC: "); 
-			
-		for(i=0; i<6;i++)
-			printf("%02X:", arpheader->sha[i]); */
-
-		printf("\nSender IP: "); 
-
-		for(i=0; i<4;i++)
-			printf("%d.", arpheader->spa[i]);
-
-		/*typedef struct NodeInfo {
-			int status;	//상태
-			int openPorts[20]; //열린포트
-			int traffics_up; //traffic 양
-			int traffics_down; //traffic 양
-		} NodeInfo;
-
-		typedef struct NodeStatus {
-			NodeInfo node[255];
-		} NodeStatus;*/
-
-		p_node_status->node[arpheader->spa[3]].status = 1;
-
-		/*printf("\nTarget MAC: "); 
-
-		for(i=0; i<6;i++)
-			printf("%02X:", arpheader->tha[i]); 
-
-		printf("\nTarget IP: "); 
-
-		for(i=0; i<4; i++)
-			printf("%d.", arpheader->tpa[i]); */
-
-		// printf("\n"); 
-	}
-	return 1; 
-
-}
-
-
-
-
-
-
-
 
 void print_packet(const unsigned char *packet)
 {

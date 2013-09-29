@@ -2,6 +2,8 @@
 #define _PROTOCOL
 
 #include <stdlib.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
 
 #define DEVICENAME "eth0"
 

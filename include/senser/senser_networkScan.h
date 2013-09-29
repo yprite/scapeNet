@@ -19,9 +19,6 @@
 #include <fcntl.h>
 #include <sys/epoll.h>
 
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-
 #include "senser_protocol.h"
 
 #define MAXBYTES2CAPTURE 2048
@@ -52,6 +49,6 @@ unsigned char* make_arp_packet(device_info, u_char );
 int get_device_info(device_info *);
 void print_packet(const unsigned char *);
 void *receiver(void *);
-int check_reply_packet(const unsigned char *, struct pcap_pkthdr *, unsigned char *, NodeStatus *);
-void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_statu);
+int check_reply_packet(const unsigned char *, struct pcap_pkthdr *, unsigned char *, NodeStatus *, int);
+void confirmNodeTraffic(const unsigned char *, struct pcap_pkthdr *, unsigned char *, int);
 #endif
