@@ -31,7 +31,7 @@ int main(void)
 		exit(1);
 	}
 
-	if ((pipeFd[1] = open(".write_face", O_WRONLY)) < 0) {
+	if ((pipeFd[1] = open(".write_face", O_RDWR)) < 0) {
 		perror("fail to call open() : write_face");
 		exit(1);
 	}
@@ -41,7 +41,7 @@ int main(void)
 		exit(1);
 	}
 
-	if ((pipeFd[3] = open(".write_sense", O_WRONLY)) < 0) {
+	if ((pipeFd[3] = open(".write_sense", O_RDWR)) < 0) {
 		perror("fail to call open() : write_sense");
 		exit(1);
 	}
