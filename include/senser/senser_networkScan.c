@@ -259,7 +259,10 @@ void *receiver(void *arg)
 
 int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_status, int pipeFd)
 {
-	// etherhdr_t *ether = (etherhdr_t*)(packet);
+	etherhdr_t *ether = (etherhdr_t*)(packet);
+	if(ntohs(ether->h_proto) != 0x0806)
+		return 0;
+	
 	arphdr_t *arpheader = (struct arphdr *)(packet+14); /* Point to the ARP header */
 	char result[1024] = {0,};
 	int writen;
