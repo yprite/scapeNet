@@ -282,10 +282,11 @@ void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr,
 		}
 
 		// brain으로 데이터 보낼 땐, 이렇게 쓰면 됨
-		if ((writen = write(pipeFd, result, sizeof(result))) < 0) {
+		if ((writen = write(pipeFd, result, strlen(result))) < 0) {
 			perror("write error");
 			exit(1);
 		}
+		close(pipeFd);
 	}
 
 }
