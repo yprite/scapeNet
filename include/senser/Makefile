@@ -7,7 +7,6 @@ all: scan
 scan: senser_main.o senser_networkScan.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-
 senser_main.o: senser_main.c senser_networkScan.h
 	$(CC) $(CFLAGS) -c $<
 
