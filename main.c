@@ -90,10 +90,9 @@ int main(void)
 					else printf("read error!\n");
 				}
 				else if (events[i].data.fd == pipeFd[1]) {
-//                                	readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
-//                                	if (readn > 0) printf("write face : %s\n", buffer);
-//                                	else printf("read error!\n");
-					printf("write face pipe\n");
+                                	readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
+                                	if (readn > 0) printf("write face : %s\n", buffer);
+                                	else printf("read error!\n");
                                 }
 				else if (events[i].data.fd == pipeFd[2]) {                        					
                                 	readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
@@ -102,10 +101,9 @@ int main(void)
                                 }
 
 				else if (events[i].data.fd == pipeFd[3]) {
-//                                	readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
-//					if (readn > 0) printf("write sense : %s\n", buffer);
-//	                               	else printf("read error!\n");
-					printf("write sense pipe\n");
+                                	readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
+					if (readn > 0) printf("write sense : %s\n", buffer);
+                                	else printf("read error!\n");
                                 }
 				memset(buffer, 0x00, BUFFER_SIZE);
 			}
