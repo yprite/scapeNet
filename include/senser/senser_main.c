@@ -1,19 +1,17 @@
 #include <stdio.h>
+
 #include "senser_networkScan.h"
 
 #define BUFFER_SIZE 255
+
+void receiver_epoll(network_grub_args *n_args);
 
 int main(int argc, char *argv[])
 {
 	network_grub_args n_args;
 	pthread_t t_id1;
 	int state1 = 0;
-	int pipeFd = 0;
 	int i;
-	int readn;
-	char buffer[BUFFER_SIZE] = {0,};
-	char *token_order, *token_ip;
-	u_char ip[4] = {0,};
 	
 	printf("network Scaning\n");
 	memset(&n_args, 0, sizeof(network_grub_args));
@@ -35,9 +33,19 @@ int main(int argc, char *argv[])
 		}
 	}
 
-//	while(1) {
-//		sleep(60);
-//	}
+	receiver_epoll(&n_args);
+
+	return 0;
+}
+
+void receiver_epoll(network_grub_args *n_args)
+{
+	int pipeFd = 0;
+	int readn = 0;
+	char buffer[BUFFER_SIZE] = {0,};
+	char *token_order, *token_ip;
+	u_char ip[4] = {0,};
+	int i = 0;
 
 	if( (pipeFd = open(".write_sense", O_RDWR)) < 0) {
 		perror("fail to call open()");
@@ -52,16 +60,14 @@ int main(int argc, char *argv[])
 		}
 		else {
 			int flag_order = 0;
-			// 데이터 받았으면 buffer에 ip들어감
 			buffer[strlen(buffer)-1] = '\0';
 
 			//head 분리
 			token_order = strtok(buffer, " ");
-			if(strcmp(token_order, "kill") == 0) {
+			if(strcmp(token_order, "k") == 0) {
 				puts("kill");
 				flag_order = 1;
-
-			} else if( strcmp(token_order, "pass") == 0) {
+			} else if( strcmp(token_order, "p") == 0) {
 				puts("pass");
 				flag_order = 2;
 			}
@@ -77,29 +83,18 @@ int main(int argc, char *argv[])
 			}
 			
 			// kill & pass
-			if(flag_order == 1) {
-				printf("kill ip = %d\n",ip[3]);
-				n_args.k_list.target_ip[ip[3]] = 1;
-			}else if(flag_order == 2) {
-				printf("pass ip = %d\n",ip[3]);
-				n_args.k_list.target_ip[ip[3]] = 0;
+			switch(flag_order) {
+				case 1:
+					printf("kill ip = %d\n",ip[3]);
+					n_args->k_list.target_ip[ip[3]] = 1;
+					break;
+				case 2:
+					printf("pass ip = %d\n",ip[3]);
+					n_args->k_list.target_ip[ip[3]] = 0;
+					break;
 			}
-
-			
-
-
-			/*
-			// brain으로 데이터 보낼 땐, 이렇게 쓰면 됨
-			if ((writen = write(pipeFd, buffer, sizeof(buffer))) < 0) {
-			perror("write error");
-			exit(1);
-			}
-			 */
 		}
 	}
-
-
-
+	
 	close(pipeFd);
-	return 0;
 }

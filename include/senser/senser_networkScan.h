@@ -1,30 +1,28 @@
 #ifndef _NETWORKSCAN
 #define _NETWORKSCAN
  
-#include <pcap.h> 
+// #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
+#include <pcap.h>
 #include <unistd.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <net/if.h>
-#include <arpa/inet.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
 #include <sys/epoll.h>
+// #include <sys/stat.h>
+// #include <sys/socket.h>
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <net/if.h>
 
 #include "senser_protocol.h"
+#include "senser_nodeKill.h"
 
 #define MAXBYTES2CAPTURE 2048
-
-//struct senser_nodeStatus_get();		//네트워크의 노드상태 확인
-//struct senser_nodeInfo_get(nodeIp);	//node의 열린포트, 트레픽 정보 확인
 
 typedef struct NodeInfo {
 	int status;	//상태
@@ -37,26 +35,20 @@ typedef struct NodeStatus {
 	NodeInfo node[255];
 } NodeStatus;
 
-typedef struct killnode_list {
+/*typedef struct killnode_list {
 	u_char target_ip[255];
 } killnode_list;
 
 typedef struct network_grub_args {
 	killnode_list k_list;
 	u_char g_ip;
-} network_grub_args;
+} network_grub_args;*/
 
 typedef struct receiver_grub_args {
 	pcap_t *p_descr;
 	NodeStatus *p_node_status;
 	unsigned char source_ip[4];
 } receiver_grub_args;
-
-typedef struct sendkill_grub_args {
-	pcap_t *descr;
-	device_info *gate_info;
-	network_grub_args *n_args;
-} sendkill_grub_args;
 
 void *networkScan(void *);
 void send_arp_packet(pcap_t *, device_info);
@@ -68,9 +60,5 @@ void print_packet(const unsigned char *);
 void *receiver(void *);
 int check_reply_packet(const unsigned char *, struct pcap_pkthdr *, unsigned char *, NodeStatus *, int);
 void confirmNodeTraffic(const unsigned char *, struct pcap_pkthdr *, unsigned char *, int);
-
-void *send_kill_packet(void *);
-unsigned char* make_kill_packet(device_info , u_char , u_char );
-int gateway_get(const unsigned char *, u_char , device_info *);
 
 #endif
