@@ -7,10 +7,9 @@ long    findcount   = 0;
 double  totalnum    = 0;
 long    scannum     = 0;
 
-int portscan(char* start_ip, char* end_ip, int t_port, int repley)
+//int portscan(char* start_ip, char* end_ip, int t_port, int repley)
+void *portscan(void *arg)
 {
-
-
 	unsigned int port;
     unsigned long i = 0;
     int max;
@@ -22,9 +21,21 @@ int portscan(char* start_ip, char* end_ip, int t_port, int repley)
     unsigned long   value = 1;
     struct host hosts[MAXSCANADDRESS];
     struct host * p = NULL;
-    p = hosts;
-	
 	long limit = 256;
+
+	char *start_ip;
+	char *end_ip;
+	int t_port;
+	int repley;
+	portscan_grub_args *m_args = 0;
+    
+	p = hosts;
+
+	m_args = (portscan_grub_args *)arg;
+	start_ip = m_args->ip;
+	end_ip = m_args->ip;
+	t_port = m_args->t_port;
+	repley = m_args->repley;
 
     if ( t_port < 0 || t_port > 65535) {
          fprintf(stdout, "Port must between 0-65535\n");
@@ -106,8 +117,8 @@ int portscan(char* start_ip, char* end_ip, int t_port, int repley)
         cur_ip = cur_ip + MAXSCANADDRESS;
     }
 
-    fprintf(stdout, "\n\nScan End! Find PortCount:%d",findcount); 
-    fprintf(stdout, "\nTotal %d s\n", (time(NULL)-scantime) );
+    fprintf(stdout, "\n\nScan End! Find PortCount:%ld",findcount); 
+    fprintf(stdout, "\nTotal %ld s\n", (time(NULL)-scantime) );
 
     return 1;
 

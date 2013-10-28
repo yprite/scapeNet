@@ -1,4 +1,3 @@
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -12,14 +11,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 struct host {
     int sock;
     int status;
 };
 
+typedef struct portscan_grub_args {
+	char *ip;
+	int t_port;
+	int repley;
+} portscan_grub_args;
+
 void usage(char *);
 int scan(int, unsigned long, int);
 int init_socket();
-int portscan(char*, char* ,int, int);
+//int portscan(char*, char* ,int, int);
+void *portscan(void *);
 
