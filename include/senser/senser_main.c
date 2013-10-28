@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "senser_networkScan.h"
+#include "senser_portscan.h"
 
 #define BUFFER_SIZE 255
 
@@ -46,6 +47,7 @@ void receiver_epoll(network_grub_args *n_args)
 	char *token_order, *token_ip;
 	u_char ip[4] = {0,};
 	int i = 0;
+	char ip_address[20];
 
 	if( (pipeFd = open(".write_sense", O_RDWR)) < 0) {
 		perror("fail to call open()");
@@ -70,8 +72,11 @@ void receiver_epoll(network_grub_args *n_args)
 			} else if( strcmp(token_order, "p") == 0) {
 				puts("pass");
 				flag_order = 2;
+			} else if( strcmp(token_order, "s") == 0) {
+				puts("scan");
+				flag_order = 3;
 			}
-
+			
 			token_order = strtok(NULL, " ");
 
 			// IP 분리
@@ -81,7 +86,7 @@ void receiver_epoll(network_grub_args *n_args)
 				token_ip = strtok(NULL, ".");
 				ip[i] = atoi(token_ip);
 			}
-			
+				
 			// kill & pass
 			switch(flag_order) {
 				case 1:
@@ -91,6 +96,17 @@ void receiver_epoll(network_grub_args *n_args)
 				case 2:
 					printf("pass ip = %d\n",ip[3]);
 					n_args->k_list.target_ip[ip[3]] = 0;
+					break;
+				case 3:
+    //portscan(start_addr, end_addr, port, re);
+    // re 가 2일 경우
+    // start_addr 의 전체 Port 를 스켄 나머지 필드는 의미 없음
+    // re가 2가 아닐경우 3으로 해주는게 좋다
+    // start 부터 end 까지 port를 전부 스켄한다.
+    //portscan("210.118.34.27","210.118.34.255", 80, 2);
+					sprintf(ip_address,"%d.%d.%d.%d",ip[0],ip[1],ip[2],ip[3]);
+					printf("portscan = %d\n",ip[3]);
+					portscan(ip_address,ip_address,0,2);
 					break;
 			}
 		}
