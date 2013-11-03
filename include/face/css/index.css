@@ -1,0 +1,39 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {margin: 0 auto; font-family: "맑은 고딕", Tahoma, "돋움"; text-align: left;}
+#header_wrap {margin: 0 auto; position: relative; width: 100%; height: 100px; background: #2e8cc2;}
+#logo_wrap{margin: 0 auto; position: relative; float: left; width: 176px; height: 65px; margin-left: 20px; margin-top: 10px; display: inline;}
+
+#desk_wrap {margin: 0 auto; float: right; position: relative; margin-right: 50px;}
+#status_count{background: red; border-radius: 50%;-moz-border-radius: 50%;-webkit-border-radius: 50%; width: 70px; height: 70px; margin-left: 20px; background: #8bd6ae; position: relative; float: right; margin-top: 12px;}
+#status_count_alert{background: red; border-radius: 50%;-moz-border-radius: 50%;-webkit-border-radius: 50%; width: 25px; height: 25px; margin-left: 20px; background: #e87530; position: absolute; overflow: hidden; left: 35px; top:-5px; color: white; text-align: center; padding: 2px 2px; padding-bottom: 0; padding-right: 0;}
+#status_list{background: red; border-radius: 50%;-moz-border-radius: 50%;-webkit-border-radius: 50%; width: 70px; height: 70px; margin-left: 20px; background: #59aad9; position: relative; float: right; margin-top: 12px; overflow: hidden;}
+
+#wrap{position: relative; margin: 0 auto; width: 100%; text-align: left; text-align: left; float: left;}
+
+#search{position:relative; width: 180px; margin: 10px 10px; float: left; width: 90%; height: 25px; background: white; border: silver 1px solid; overflow: hidden; text-align: left;  }
+#input_search{width: 150px; height: 20px; border: none; outline: none; font-size: 15px; color: #6b6b6b;}
+#btn_search{position: absolute; float: right;}
+
+#mornitor_wrap{position: relative; float: left; width: 200px; height: 150px; background: #c7cdce;}
+
+
+#navi{position:relative; width: 180px; margin: 10px 10px; float: left;}
+#navi_wrap {position: relative; width: 200px; height: 800px; background: #e1e1e1; float: left;}
+
+
+#content_wrap{position: relative; width: 700px; height: 500px; float: left;}
+.dashboard_wrap{position: relative; width: 680px; float: left; margin: 10px 20px;}
+.dashboard_title{position: relative; width: 700px; height: 50px; float: left; margin: 0 auto; margin-left: 10px; margin-bottom: 5px; color: #646464; border-bottom: 1px #898989 solid;}
+.dashboard_content{position: relative; width: 680px; height: 200px; float: left;}
+#info_donut_1{position: relative; width: 200px; height: 200px; float: left; margin-right: 40px;}
+#info_donut_2{position: relative; width: 200px; height: 200px; float: left; margin-right: 40px;}
+#info_donut_3{position: relative; width: 200px; height: 200px; float: left;}
+
+
+.navi_title{padding: 0 38px; padding-top: 6px; background-repeat: no-repeat; background-size: 25px 25px; background-position:8px 4px; font-size: 20px; cursor: pointer; height: 30px; color: #393939; position: relative; float: left; margin: 0 auto; margin-top: 10px; width: 100px;}
+
+#navi_t_dashboard{background-image: url('../img/navi_dashboard.png');}
+ul{list-style:none; width: 100%; padding : 0 0; margin: 0 auto; position: relative; float: left; margin-left: 35px; }
+li{list-style:none; width: 100%; padding-left : 5px; padding-top: 7px; height: 25px;}
