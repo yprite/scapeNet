@@ -61,6 +61,10 @@
 	</div>
 	</div>
 	
+	<div id="ip_mapping_wrap" class="dashboard_wrap ipm_main">
+	</div>
+	<div id="info_ip_title" class="dashboard_title"><h2>Information Of IP</h2></div>
+	
 </div>
 </div>
 
