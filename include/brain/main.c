@@ -48,22 +48,22 @@ int main(void)
 		exit(1);
 	}
 
-	if ((pipeFd[0] = open(".read_face", O_RDWR)) < 0) {
+	if ((pipeFd[0] = open("../senser/.read_face", O_RDWR)) < 0) {
 		perror("fail to call open() : read_face");
 		exit(1);
 	}
 
-	if ((pipeFd[1] = open(".write_face", O_RDWR)) < 0) {
+	if ((pipeFd[1] = open("../senser/.write_face", O_RDWR)) < 0) {
 		perror("fail to call open() : write_face");
 		exit(1);
 	}
 
-	if ((pipeFd[2] = open(".read_sense", O_RDWR)) < 0) {
+	if ((pipeFd[2] = open("../senser/.read_sense", O_RDWR)) < 0) {
 		perror("fail to call open() : read_sense");
 		exit(1);
 	}
 
-	if ((pipeFd[3] = open(".write_sense", O_RDWR)) < 0) {
+	if ((pipeFd[3] = open("../senser/.write_sense", O_RDWR)) < 0) {
 		perror("fail to call open() : write_sense");
 		exit(1);
 	}
