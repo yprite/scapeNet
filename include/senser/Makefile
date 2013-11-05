@@ -22,3 +22,4 @@ senser_portscan.o: senser_portscan.c senser_portscan.h
 clean:
 	rm -f *.o scan
 
+
