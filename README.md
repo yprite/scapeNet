@@ -1,2 +1,2 @@
 ## Introduction
-![![scapeNet Logo](http://seunghyun.net/ssm/sn_logo.png)]
+![scapeNet Logo](http://seunghyun.net/ssm/sn_logo.png)
