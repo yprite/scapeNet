@@ -1,3 +1,3 @@
 ## Introduction
 ![Image][test.png]
-[![Qiniu Logo](https://github.com/yprite/scapeNet/blob/master/test.png)](http://qiniu.com/)
+[![Qiniu Logo](http://seunghyun.net/ssm/scapenet.png)](http://qiniu.com/)
