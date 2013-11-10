@@ -1,4 +1,7 @@
 $(document).ready(function(){
+	$('.dashboard_wrap').hide();
+	$('.content_main').show();
+	
 	var aa = Morris.Area({
 	  element: 'info_traffic_day',
 	  data: [
@@ -81,9 +84,49 @@ $(document).ready(function(){
 }
 
 
+	var mornitor_on = 1;
+	$('#mornitor_toggle').click(function(){
+		if(mornitor_on == 0){
+		$('#mornitor_content').fadeTo(250,1);
+			$('#mornitor_wrap').slideDown();
+			$(this).html('︿');
+			mornitor_on = 1
+		}else{
+			$('#mornitor_content').fadeTo(250,0.08);
+			$('#mornitor_wrap').slideUp();			
+			mornitor_on = 0
+			$(this).html('﹀');
+		}
+	})	
+	
+	$('.func_btn').mouseover(function(){
+		$(this).attr('src',$(this).attr('src').replace('.png', '_0.png'));
+	})
+	.mouseout(function(){
+		$(this).attr('src',$(this).attr('src').replace('_0.png', '.png'));
+	});
+	
+	var terminer_on = 0;
+	$('#btn_func_terminer').click(function(){
+		if(terminer_on == 0){
+			$('#terminer_wrap').slideDown();
+			$('#terminer_area').focus();
+			$('#terminer_area').val($('#terminer_area').val()+'');
+			terminer_on = 1
+		}else{
+			$('#terminer_wrap').slideUp();			
+			$('#terminer_area').blur();
+			terminer_on = 0
+		}
 
-
-
+	});
+	$('#terminer_area').keyup(function(e){
+		var code = (e.keyCode ? e.keyCode : e.which);
+	     if(code == 13) { //Enter keycode
+	       //Do something
+	         $(this).val('Scapenet > ');
+	     }
+	})
 	$('#input_search').keyup(function(){
 		if(!$(this).val()){
 			$('.content_main').show();
@@ -100,5 +143,50 @@ $(document).ready(function(){
             }else{
                 submenu.slideDown();
             }
-        })
+    });
+    $('#btn_dashboard').click(function(){
+	    $('.dashboard_wrap').hide();
+	    $('.content_main').show();
+    })
+    .mouseover(function(){
+	    $(this).css('color','#2490ce');
+    })
+    .mouseout(function(){
+	    $(this).css('color','#393939');
+    });
+    
+    function change_node(){
+    var return_color = function(rand){
+	    switch(rand){
+		    case 0 : return "#949494"; break;
+		    case 1 : return "#38dc89"; break;
+		    case 2 : return "#dd5f8f"; break;
+		    default : return "#dce636"; break;
+	    }
+    }
+    var result = new Array();
+    for(i=0;i<255;i++){
+    var rands = Math.floor(Math.random() * 4);
+    
+    result[i] = return_color(rands);
+    }
+	    $('.map_node').each(function(){
+		    $(this).delay(3000).animate({'backgroundColor': result[$(this).attr('alt')]},600,function(){
+		    change_node(); 
+			});
+	    });
+    }
+    
+    $('.li_1').click(function(){
+	    switch($(this).attr('alt')){
+		    case 'ipm' :$('.dashboard_wrap').hide();$('.ipm_main').show();change_node();break;
+	    }
+    });
+    $('li').mouseover(function(){
+	    $(this).css('color','#2490ce');
+    })
+    .mouseout(function(){
+	    $(this).css('color','#6d6d6d');
+    })
+
 });
