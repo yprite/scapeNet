@@ -1,6 +1,7 @@
 #!/bin/bash
 
 _temp="/tmp/answer.$$"
+_package="/tmp/package.$$"
 PN=`basename "$0"`
 VER='0.1'
 
@@ -38,30 +39,36 @@ check_dialogPackage() {
 
 
 set_package() {
+	if [ -e $_package ]; then rm $_package; fi
 	for packageName in libdbd-mysql-perl libmysqlclient18:i386 mysql-client-5.5 mysql-client-core-5.5 mysql-common mysql-server mysql-server-5.5 mysql-server-core-5.5 php5-mysql libapache2-mod-php5 php5 php5-cli php5-common php5-gd apache2 apach2-mpm-prefork apache2-utils apache2.2-bin apache2.2-common
 	do
 		check=`dpkg -l | grep -w $packageName | awk '{print $2}' | grep -w $packageName`
-		if [ "$check" != "" ]
+		if [ "$check" = "" ]
 		then
-			#$check>>/tmp/package
-			echo $check
-			sleep 1
+			echo "$packageName" >> $_package
+			echo "\n" >> $_package
 		fi
-	done	
-	
-	#cat /tmp/package
+	done
+	printPackage=`cat $_package`
+	dialog --title "" --msgbox "uninstalled package list.\nEnter the OK key to install.\n\n$printPackage" 30 60 
 }
 
-set_passward() {
-	dialog --backtitle "scapeNet - set passward"\
-		--inputbox "Enter the passward that you want to set" 8 52 2>$_temp
-
+set_register() {
+	dialog --backtitle "scapeNet - Register"\
+		--form "Enter the information of admin to access" 20 70 15\
+		"e-mail" 2 4 "" 2 15 20 0\
+		"passward" 4 4 "" 4 15 20 0\
+		"ip" 6 4 "" 6 15 20 0 2>$_temp
+	
+	if [ ${?} -ne 0 ]; then return; fi
 	result=`cat $_temp`
-	dialog --msgbox "\nYou entered:\n$result" 9 52
+	dialog --title "Items are separated by \\nn" --cr-wrap\
+		--msgbox "\nYou entered:\n$result" 12 52
+
 }
 
 show_version() {
-	dialog --backtitle "scapeNet - show version"\
+	dialog --backtitle "scapeNet - Version"\
 		--msgbox "$PN - Version $VER\nThe scapeNet configuration service\n" 9 52
 }
 
@@ -70,18 +77,18 @@ main_menu() {
 		--cancel-label "Quit" \
 		--menu "This is the scapeNet.\nMove using [UP] [DOWN], [Enter] to select.\nTry it now!\n\n" 17 60 10\
 		Package "scapeNet needs some package"\
-		Passward "Set the operator passward"\
+		Register "Set the operator passward"\
 		Version "Show program version info"\
 		Quit "Exit configuration" 2>$_temp
 
 	opt=${?}
-	if [ $opt != 0 ]; then rm $_temp; exit; fi
+	if [ $opt != 0 ]; then rm $_temp $_package; exit; fi
 	menuitem=`cat $_temp`
 	case $menuitem in
 		Package) set_package;;
-		Passward) set_passward;;
+		Register) set_register;;
 		Version) show_version;;
-		Quit) rm $_temp; exit;;
+		Quit) rm $_temp $_package; exit;;
 	esac
 }
 
