@@ -157,24 +157,26 @@ int scan(int sock, unsigned long ip, int port ) {
 
     /* connect completed immediately */
 	if ( n == 0 ) {
-		if((pipeFd = open(".read_sense", O_RDWR)) < 0) {
+		/*if((pipeFd = open(".read_sense", O_RDWR)) < 0) {
 			perror("fail to call open()");
 			exit(1);
-		}
+		}*/
 
 		findcount += 1;
 		//fprintf(stdout,"connect completed immediately\n");
 		fprintf(stdout, "%s -> %d\n", (char*)inet_ntoa(sin.sin_addr),
 				ntohs(sin.sin_port) ); 
-		sprintf(result, "!#%s&%d", (char*)inet_ntoa(sin.sin_addr), ntohs(sin.sin_port) );
+		sprintf(result, "echo D#%sL%d > .read_sense", (char*)inet_ntoa(sin.sin_addr), ntohs(sin.sin_port) );
 
-		if ((writen = write(pipeFd, result, strlen(result))) < 0) {
+		system(result);
+
+		/*if ((writen = write(pipeFd, result, strlen(result))) < 0) {
 			perror("write error");
 			exit(1);
-		}
+		}*/
 
 
-		close(pipeFd);
+		//close(pipeFd);
 
 		return 0;
 	}
