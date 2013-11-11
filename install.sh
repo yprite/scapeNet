@@ -45,6 +45,7 @@ set_package() {
 		then
 			#$check>>/tmp/package
 			echo $check
+			sleep 1
 		fi
 	done	
 	
