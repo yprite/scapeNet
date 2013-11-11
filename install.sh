@@ -37,6 +37,28 @@ then
 fi
 
 
+
+function display_output() {
+	local h=${1-10}			# box height default 10
+	local w=${2-41} 		# box width default 41
+	local t=${3-Output} 	# box title 
+	dialog --backtitle "Linux Shell Script Tutorial" --title "${t}" --clear --msgbox "$(<$OUTPUT)" ${h} ${w}
+}
+
+function show_date() {
+	echo "Today is $(date) @ $(hostname -f)." >$OUTPUT
+	display_output 6 60 "Date and Time"
+}
+
+function show_calendar() {
+	cal >$OUTPUT
+	display_output 13 25 "Calendar"
+}
+
+
+while true
+do
+
 ### display main menu ###
 dialog --clear  --help-button --backtitle "filesale present" \
 	--title "==== [ SCAPENET CONFIGURATION ] ====" \
@@ -49,7 +71,7 @@ dialog --clear  --help-button --backtitle "filesale present" \
 	Editor "Start a text editor" \
 	Exit "Exit to the shell" 2>"${INPUT}"
  
-menuitem="${INPUT}"
+menuitem=$(<"${INPUT}")
  
 
 # make decsion 
@@ -60,6 +82,7 @@ case $menuitem in
 	Exit) echo "Bye"; break;;
 esac
 
+done
 
 
 
