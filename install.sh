@@ -82,13 +82,13 @@ main_menu() {
 		Quit "Exit configuration" 2>$_temp
 
 	opt=${?}
-	if [ $opt != 0 ]; then rm $_temp $_package; exit; fi
+	if [ $opt != 0 ]; then rm $_temp $_package; clear; exit; fi
 	menuitem=`cat $_temp`
 	case $menuitem in
 		Package) set_package;;
 		Register) set_register;;
 		Version) show_version;;
-		Quit) rm $_temp $_package; exit;;
+		Quit) rm $_temp $_package; clear; exit;;
 	esac
 }
 
