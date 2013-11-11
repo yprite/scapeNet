@@ -27,5 +27,5 @@ void usage(char *);
 int scan(int, unsigned long, int);
 int init_socket();
 //int portscan(char*, char* ,int, int);
-void *portscan(void *);
+void portscan(void *);
 

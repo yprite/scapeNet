@@ -11,20 +11,17 @@ int target_port[] = {1,3,4,6,7,9,13,17,19,20,21,22,23,24,25,26,30,32,33,37,42,43
 
 
 //int portscan(char* start_ip, char* end_ip, int t_port, int repley)
-void *portscan(void *arg)
+void portscan(void *arg)
 {
 	unsigned int port;
     unsigned long i = 0;
     int max;
     int loop = 0;
-    int ret = -1;
     unsigned long   start_addr, end_addr;
     time_t          scantime;
     unsigned long   cur_ip;
-    unsigned long   value = 1;
     struct host hosts[MAXSCANADDRESS];
     struct host * p = NULL;
-	long limit = 256;
 
 	char *start_ip;
 	char *end_ip;
@@ -51,7 +48,6 @@ void *portscan(void *arg)
 
     if (start_addr > end_addr) {
         fprintf(stdout, "Check your ip range\n");
-		return 0;
     }
 
     port = t_port;
@@ -64,7 +60,7 @@ void *portscan(void *arg)
 	if(repley == 2){
 		cur_ip = 1;
 		end_addr = sizeof(target_port)/4;
-		printf("size = %d\n", end_addr);
+		printf("size = %lu\n", end_addr);
 		MAXSCANADDRESS = 1;
 	}
 
@@ -126,9 +122,6 @@ void *portscan(void *arg)
 
     fprintf(stdout, "\n\nScan End! Find PortCount:%ld",findcount); 
     fprintf(stdout, "\nTotal %ld s\n", (time(NULL)-scantime) );
-
-    return 1;
-
 }
 
 int scan(int sock, unsigned long ip, int port ) {
