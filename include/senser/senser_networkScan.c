@@ -1,6 +1,6 @@
 #include "senser_networkScan.h"
 
-int flag = 0;
+int traffic_flag = 0;
 
 void *networkScan(void *arg)
 {
@@ -102,7 +102,7 @@ void *networkScan(void *arg)
 
 	// puts("thread start2");
 	while(1) {
-		flag = 0;
+		traffic_flag = 0;
 		memset(&node_status, 0, sizeof(NodeStatus));
 		send_arp_packet(descr, dev_info);
 		
@@ -120,7 +120,7 @@ void *networkScan(void *arg)
 		}
 		puts("");
 
-		flag = 1;
+		traffic_flag = 1;
 
 		sleep(30);
 	}
@@ -138,9 +138,6 @@ void send_arp_packet(pcap_t *descr, device_info dev_info)
 		// print_packet(packet);
 		pcap_sendpacket(descr, packet, 42);
 		usleep(10000);
-
-		// usleep(50000);
-		// usleep(500000);
 	}
 }
 
@@ -285,7 +282,7 @@ void *receiver(void *arg)
 
 
 
-		if(flag == 1) {
+		if(traffic_flag == 1) {
 			confirmNodeTraffic(p_packet, p_pkthdr, source_ip, pipeFd);
 		}
 		
