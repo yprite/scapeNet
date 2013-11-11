@@ -10,35 +10,27 @@ then
 	exit 1
 fi
 
+
 echo "This is install script for scapeNet service."
-echo "Installing the dialog package."
-#sudo apt-get install dialog
-
-while [ 1 ]
-do
-	echo -n "Are you using the kernel module? [y/n]"
-	read input
-	if [ "$input" = "y" ]
-	then
-		mode=1
-		break
-	elif [ "$input" = "n" ]
-	then
-		mode=0
-		break
-	else
-		echo "The value is not valid."
-	fi
-done
-
-#sudo apt-get install mysql-server
-#sudo apt-get install mysql-client
-
-if [ $mode -eq 0 ]
+echo "Check that the dialog package is installed."
+CHECK=`dpkg -l | grep -w dialog | awk '{print $2}' | grep -w dialog`
+if [ CHECK != "" ]
 then
-	echo "Installing the pcap library package."
-	#sudo apt-get install libpacap-dev
+	echo "Dialog package is installed."
+	sleep 1
+else
+	echo "Dialog package is not installed."
+	echo "Would you like to install the dialog package?[y/n]"
+	read INPUT
+	if [ "$INPUT" = "y" ]
+	then
+		sudo apt-get install dialog
+	else
+		echo "Bye."
+		exit 1
+	fi
 fi
+
 
 set_passward() {
 	dialog --backtitle "scapeNet - set passward"\
