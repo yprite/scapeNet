@@ -43,11 +43,11 @@ set_package() {
 		check=`dpkg -l | grep -w $packageName | awk '{print $2}' | grep -w $packageName`
 		if [ "$check" != "" ]
 		then
-			$check>>$_temp
+			$check>>/tmp/package
 		fi
 	done	
 	
-	echo $_temp
+	cat /tmp/package
 }
 
 set_passward() {
