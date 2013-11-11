@@ -14,13 +14,13 @@ fi
 echo "This is install script for scapeNet service."
 echo "Check that the dialog package is installed."
 CHECK=`dpkg -l | grep -w dialog | awk '{print $2}' | grep -w dialog`
-if [ CHECK != "" ]
+if [ "$CHECK" != "" ]
 then
 	echo "Dialog package is installed."
 	sleep 1
 else
 	echo "Dialog package is not installed."
-	echo "Would you like to install the dialog package?[y/n]"
+	echo -n "Would you like to install the dialog package?[y/n]"
 	read INPUT
 	if [ "$INPUT" = "y" ]
 	then
