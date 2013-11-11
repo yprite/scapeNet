@@ -1,5 +1,4 @@
 #include "senser_networkScan.h"
-#include <errno.h>
 
 int flag = 0;
 
@@ -332,7 +331,7 @@ int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, 
 		perror("write error");
 		exit(1);
 	}
-*/
+	*/
 	system(result);
 	usleep(300);
 	return 1; 
@@ -370,11 +369,11 @@ void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr,
 		// printf("%d ", *((u_char*)(&n_ip_temp)+i) );
 		}
 		else{
-			sprintf(result,"|@%d.%d.%d.%dL%dLd%dL%d.%d.%d.%d", c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3], ntohs(tcp->source), pkthdr->len, c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3]);
+			sprintf(result,"echo D@%d.%d.%d.%dL%dLd%dL%d.%d.%d.%d > .read_sense", c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3], ntohs(tcp->source), pkthdr->len, c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3]);
 			
 		}
 
-		printf("%s\n", result);
+		//printf("%s\n", result);
 		// brain으로 데이터 보낼 땐, 이렇게 쓰면 됨
 		/*if ((writen = write(pipeFd, result, strlen(result))) < 0) {
 			perror("write error");
