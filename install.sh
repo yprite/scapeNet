@@ -1,23 +1,26 @@
 #!bin/sh
 
+if [ $(id -u) -ne 0 ]
+then
+	echo "Script must be run as root. Try 'sudo sh ./install.sh'"
+	exit 1
+fi
 
-mode=0
 echo "This is install script for scapeNet service."
-echo "Installing dialog package."
+echo "Installing the dialog package."
 #sudo apt-get install dialog
 
 while [ 1 ]
 do
 	echo -n "Are you using the kernel module? [y/n]"
 	read input
-
-	if [ $input -eq 'y' ]
+	if [ "$input" = "y" ]
 	then
-		$mode=1
+		mode=1
 		break
-	elif [ $input -eq 'n' ]
+	elif [ "$input" = "n" ]
 	then
-		$mode=0
+		mode=0
 		break
 	else
 		echo "The value is not valid."
@@ -29,8 +32,34 @@ done
 
 if [ $mode -eq 0 ]
 then
-	echo "Installing pcap package."
+	echo "Installing the pcap library package."
 	#sudo apt-get install libpcap-dev
 fi
+
+
+### display main menu ###
+dialog --clear  --help-button --backtitle "filesale present" \
+	--title "==== [ SCAPENET CONFIGURATION ] ====" \
+	--menu "You can use the UP/DOWN arrow keys, the first \n\
+	letter of the choice as a hot key, or the \n\
+	number keys 1-9 to choose an option.\n\
+	Choose the TASK" 15 50 4 \
+	Date/time "Displays date and time" \
+	Calendar "Displays a calendar" \
+	Editor "Start a text editor" \
+	Exit "Exit to the shell" 2>"${INPUT}"
+ 
+menuitem="${INPUT}"
+ 
+
+# make decsion 
+case $menuitem in
+	Date/time) show_date;;
+	Calendar) show_calendar;;
+	Editor) $vi_editor;;	
+	Exit) echo "Bye"; break;;
+esac
+
+
 
 
