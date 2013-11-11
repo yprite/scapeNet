@@ -43,7 +43,7 @@ set_package() {
 		check=`dpkg -l | grep -w $packageName | awk '{print $2}' | grep -w $packageName`
 		if [ "$check" != "" ]
 		then
-			$check>$_temp
+			$check>>$_temp
 		fi
 	done	
 	
@@ -75,7 +75,6 @@ main_menu() {
 	opt=${?}
 	if [ $opt != 0 ]; then rm $_temp; exit; fi
 	menuitem=`cat $_temp`
-	echo "menu=$menuitem"
 	case $menuitem in
 		Package) set_package;;
 		Passward) set_passward;;
