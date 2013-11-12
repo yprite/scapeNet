@@ -1,5 +1,7 @@
 #include "senser_networkScan.h"
 
+int traffic_flag = 0;
+
 void *networkScan(void *arg)
 {
 	bpf_u_int32 netaddr=0, mask=0;    /* To Store network address and netmask   */ 
@@ -100,6 +102,7 @@ void *networkScan(void *arg)
 
 	// puts("thread start2");
 	while(1) {
+		traffic_flag = 0;
 		memset(&node_status, 0, sizeof(NodeStatus));
 		send_arp_packet(descr, dev_info);
 		
@@ -117,6 +120,8 @@ void *networkScan(void *arg)
 		}
 		puts("");
 
+		traffic_flag = 1;
+
 		sleep(30);
 	}
 	printf("main function exit\n");
@@ -133,8 +138,6 @@ void send_arp_packet(pcap_t *descr, device_info dev_info)
 		// print_packet(packet);
 		pcap_sendpacket(descr, packet, 42);
 		usleep(10000);
-		// usleep(50000);
-		// usleep(500000);
 	}
 }
 
@@ -252,7 +255,7 @@ int get_device_info(device_info *p_dev_info)
 
 void *receiver(void *arg)
 {
-	int pipeFd;
+	int pipeFd = 0;
 	const unsigned char *p_packet = 0;
 	struct pcap_pkthdr *p_pkthdr = 0;
 
@@ -262,23 +265,32 @@ void *receiver(void *arg)
 	unsigned char *source_ip = 0;	
 	source_ip = grub->source_ip;
 
-	
-
+/*	if ((pipeFd = open(".read_sense", O_RDWR)) < 0) {
+		perror("fail to call open()");
+		exit(1);
+	}
+*/
 	while(1){
 		if (pcap_next_ex(p_descr, &p_pkthdr, &p_packet) != 1) {
 			continue;
 		}
 
-		if ((pipeFd = open(".read_sense", O_RDWR)) < 0) {
+		/*if ((pipeFd = open(".read_sense", O_RDWR)) < 0) {
 			perror("fail to call open()");
 			exit(1);
-		}
+		}*/
 
-		confirmNodeTraffic(p_packet, p_pkthdr, source_ip, pipeFd);
+
+
+		if(traffic_flag == 1) {
+			confirmNodeTraffic(p_packet, p_pkthdr, source_ip, pipeFd);
+		}
+		
 		check_reply_packet(p_packet, p_pkthdr, source_ip, p_node_status, pipeFd);
 
-		close(pipeFd);
+		//close(pipeFd);
 	}
+	close(pipeFd);
 
 	return 0;
 }
@@ -308,14 +320,17 @@ int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, 
 
 		p_node_status->node[arpheader->spa[3]].status = 1;
 
-		sprintf(result,"!~%d.%d.%d.%d", arpheader->spa[0], arpheader->spa[1], arpheader->spa[2], arpheader->spa[3]);
+		sprintf(result,"echo D~%d.%d.%d.%d > .read_sense", arpheader->spa[0], arpheader->spa[1], arpheader->spa[2], arpheader->spa[3]);
 
 	}
 
-	if ((writen = write(pipeFd, result, strlen(result))) < 0) {
+	/*if ((writen = write(pipeFd, result, strlen(result))) < 0) {
 		perror("write error");
 		exit(1);
 	}
+	*/
+	system(result);
+	usleep(300);
 	return 1; 
 
 }
@@ -346,20 +361,23 @@ void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr,
 		char result[1024] = {0,};
 		
 		if(c_src_ip[0] == 210 && c_src_ip[1] == 118 && c_src_ip[2] == 34){
-			sprintf(result,"!@%d.%d.%d.%d&%d&u%d&%d.%d.%d.%d", c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3], ntohs(tcp->dest), pkthdr->len, c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3]);
+			sprintf(result,"echo D@%d.%d.%d.%dL%dLu%dL%d.%d.%d.%d > .read_sense", c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3], ntohs(tcp->dest), pkthdr->len, c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3]);
 			
 		// printf("%d ", *((u_char*)(&n_ip_temp)+i) );
 		}
 		else{
-			sprintf(result,"!@%d.%d.%d.%d&%d&d%d&%d.%d.%d.%d", c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3], ntohs(tcp->source), pkthdr->len, c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3]);
+			sprintf(result,"echo D@%d.%d.%d.%dL%dLd%dL%d.%d.%d.%d > .read_sense", c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3], ntohs(tcp->source), pkthdr->len, c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3]);
 			
 		}
 
-		// brain으로 데이터 보낼 땐, 이렇게 쓰면 됨
-		if ((writen = write(pipeFd, result, strlen(result))) < 0) {
+		//printf("%s\n", result);
+		/*if ((writen = write(pipeFd, result, strlen(result))) < 0) {
 			perror("write error");
 			exit(1);
-		}
+		}*/
+		system(result);
+		usleep(300);
+
 	}
 
 }
