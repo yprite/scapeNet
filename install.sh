@@ -1,5 +1,4 @@
 #!/bin/bash
-
 _temp="/tmp/answer.$$"
 _package="/tmp/package.$$"
 PN=`basename "$0"`
