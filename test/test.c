@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
-
 int main(int argc, char **argv){
 
 	char *str="!@210.118.34.70&22&u8000&210.118.34.55";
