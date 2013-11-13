@@ -38,8 +38,6 @@ check_dialogPackage() {
 	fi
 }
 
-
-
 set_package() {
 	if [ -e $_package ]; then rm $_package; fi
 	for packageName in libdbd-mysql-perl libmysqlclient18:i386 mysql-client-5.5 mysql-client-core-5.5 mysql-common mysql-server mysql-server-5.5 mysql-server-core-5.5 php5-mysql libapache2-mod-php5 php5 php5-cli php5-common php5-gd apache2 apach2-mpm-prefork apache2-utils apache2.2-bin apache2.2-common
