@@ -5,6 +5,8 @@ _package="/tmp/package.$$"
 PN=`basename "$0"`
 VER='0.1'
 
+##test
+
 ### 루트 권한으로 실행했는지 체크 ###
 if [ $(id -u) -ne 0 ]
 then
