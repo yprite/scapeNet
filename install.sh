@@ -66,7 +66,6 @@ set_register() {
 	result=`cat $_temp`
 	dialog --title "Items are separated by \\nn" --cr-wrap\
 		--msgbox "\nYou entered:\n$result" 12 52
-
 }
 
 show_version() {
