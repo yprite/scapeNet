@@ -98,10 +98,10 @@ int main(void)
                 if (events[i].data.fd == pipeFd[0]) {
                     readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
                     if (readn > 0){
-
-                        printf(".read_face : %s\n", buffer);
+                        printf("read_Face : %s\n", buffer);
+                        write(pipeFd[3], buffer, BUFFER_SIZE);
                     }
-                    else printf("read error!\n");
+                    else printf("read_face error!\n");
                 }
 //              else if (events[i].data.fd == pipeFd[1]) {
 //                                  readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
@@ -109,9 +109,12 @@ int main(void)
 //                                  else printf("read error!\n");
 //                           }
                 else if (events[i].data.fd == pipeFd[2]) {
-                            readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
-                            printf("read_sense : %s\n", buffer);
-                            write(pipeFd[1], buffer, BUFFER_SIZE);
+                    readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
+                    if(readn >0){
+                        printf("read_sense : %s\n", buffer);
+                        write(pipeFd[1], buffer, BUFFER_SIZE);
+                    }
+                    else printf("read_sense error!\n");
                 }
 
 //              else if (events[i].data.fd == pipeFd[3]) {
