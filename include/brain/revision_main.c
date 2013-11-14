@@ -79,14 +79,14 @@ int main(void)
 		
 		case 0:
 			printf("No event in any pipe \n");
-			if(isCheck ==0 || isChanged == 0){
+/*			if(isCheck ==0 || isChanged == 0){
 				int i=0;
 				for(i=1; i<255; i++){
 					if(user_info[i].isStatus == 1){
 					printf(" on node( 210.118.34.%d)\n", i);
 					}
 				}
-			}
+			}*/
 			break;
 
 		default:
