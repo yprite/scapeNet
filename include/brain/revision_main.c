@@ -1,27 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/epoll.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-
-#define EPOLL_SIZE 20
-#define BUFFER_SIZE 255
-
-typedef struct u_info{
-
-	char source_ip[12];
-	char port[5][10];
-	char up_traffic_cur[10];
-	char down_traffic_cur[10];
-	char up_limit_traffic[10];
-	char down_limit_traffic[10];
-	int isStatus;
-}u_info;
+#include "brain.h" 
 
 
-u_info user_info[255];
+//u_info user_info[255];
 
 
 int main(void)
