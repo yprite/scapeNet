@@ -1,21 +1,21 @@
 $(document).ready(function(){
 	$('.dashboard_wrap').hide();
 	$('.content_main').show();
-	
+	var interval = 10;
 	var aa = Morris.Area({
 	  element: 'info_traffic_day',
 	  data: [
-	    { y: '2012-02-24 15:00', a: 100, b: 90 },
-	    { y: '2012-02-24 16:00', a: 75,  b: 65 },
-	    { y: '2012-02-24 17:00', a: 50,  b: 40 },
-	    { y: '2012-02-24 18:00', a: 75,  b: 65 },
-	    { y: '2012-02-24 19:00', a: 50,  b: 40 },
-	    { y: '2012-02-24 20:00', a: 75,  b: 65 },
-	    { y: '2012-02-24 21:00', a: 100, b: 90 }
+	    { y: '2013-10-24 15:00', a: 100, b: 90 },
+	    { y: '2013-10-24 16:00', a: 75,  b: 65 },
+	    { y: '2013-10-24 17:00', a: 50,  b: 40 },
+	    { y: '2013-10-24 18:00', a: 75,  b: 65 },
+	    { y: '2013-10-24 19:00', a: 50,  b: 40 },
+	    { y: '2013-10-24 20:00', a: 75,  b: 65 },
+	    { y: '2013-10-24 21:00', a: 100, b: 90 }
 	  ],
 	  xkey: 'y',
 	  ykeys: ['a', 'b'],
-	  labels: ['192.168.0.1', '192.168.0.2']
+	  labels: ['210.118.34.222', '210.118.34.65']
 	});
 	
 	Morris.Donut({
@@ -47,10 +47,22 @@ $(document).ready(function(){
 	
 	var timer1 = setInterval(function(){
 	var number = 1 + Math.floor(Math.random() * 253);
-	$('#status_on').attr('src','action/status_font.php?q='+number);
+	$('#status_on').attr('src','http://sshdb.com/ssm/status_font.php?q='+number);
 	}, 2000);
 	
-	
+	var timer3 = setInterval(function(){
+			$.ajax({
+			type: 'POST',
+			url: '/action/view_face.php',
+			success: function(result) {
+				var str = result.replace(/L/gi, '<br />&nbsp;&nbsp;');
+				
+			$('#txt_mornitor').html("<br />&nbsp;&nbsp;<strong><u>"+str+"</u></strong>");
+			},
+			error: function(result) {
+			}
+	});
+	}, interval);
 	
 	
 	var timer2 = setInterval(function(){
@@ -59,15 +71,14 @@ $(document).ready(function(){
 	var number3 = 10 + Math.floor(Math.random() * 90);
 	var number4 = 10 + Math.floor(Math.random() * 90);
 	var number5 = 10 + Math.floor(Math.random() * 90);
-	$('#status_on').attr('src','action/status_font.php?q='+number);
 	aa.setData([
-	    { y: '2012-02-24 16:00', a: number4, b: number3 },
-	    { y: '2012-02-24 17:00', a: number3,  b: number5 },
-	    { y: '2012-02-24 18:00', a: number2,  b: number },
-	    { y: '2012-02-24 19:00', a: number,  b: number4 },
-	    { y: '2012-02-24 20:00', a: number5,  b: number3 },
-	    { y: '2012-02-24 21:00', a: number,  b: number2 },
-	    { y: '2012-02-24 22:00', a: number3, b: number2 }
+	    { y: '2013-10-24 16:00', a: number4, b: number3 },
+	    { y: '2013-10-24 17:00', a: number3,  b: number5 },
+	    { y: '2013-10-24 18:00', a: number2,  b: number },
+	    { y: '2013-10-24 19:00', a: number,  b: number4 },
+	    { y: '2013-10-24 20:00', a: number5,  b: number3 },
+	    { y: '2013-10-24 21:00', a: number,  b: number2 },
+	    { y: '2013-10-24 22:00', a: number3, b: number2 }
 	  ])
 	}, 5000);
 	
@@ -124,6 +135,18 @@ $(document).ready(function(){
 		var code = (e.keyCode ? e.keyCode : e.which);
 	     if(code == 13) { //Enter keycode
 	       //Do something
+	       $.ajax({
+			type: 'POST',
+			data: { q : $('#terminer_area').val()},
+			url: '/action/terminer.php',
+			success: function(result) {
+			$('#terminer_area').blur();
+				eval(result);
+			$('#terminer_area').focus();
+			},
+			error: function(result) {
+			}
+			});
 	         $(this).val('Scapenet > ');
 	     }
 	})
@@ -144,9 +167,13 @@ $(document).ready(function(){
                 submenu.slideDown();
             }
     });
-    $('#btn_dashboard').click(function(){
+    $('.btn_dashboard').click(function(){
 	    $('.dashboard_wrap').hide();
 	    $('.content_main').show();
+	    $('.map_node').each(function(){
+		    $(this).stop();
+	    });
+	    
     })
     .mouseover(function(){
 	    $(this).css('color','#2490ce');

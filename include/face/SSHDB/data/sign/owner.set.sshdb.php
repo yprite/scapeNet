@@ -1,0 +1,11 @@
+null:null;
+lang:kr;
+cache_frequency:1;
+size_stack:300;
+log:0;
+log_error:1;
+log_connect:1;
+log_modify:1;
+log_view:1;
+log_msg:1;
+log_valen:25;

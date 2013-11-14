@@ -16,11 +16,11 @@
 <body>
 
 <div id="header_wrap">
-	<div id="logo_wrap"><img src="img/logo.png" alt="scapenet" width="176" height="65" /></div>
+	<div id="logo_wrap" class="btn_dashboard"><img src="img/logo.png" alt="scapenet" width="176" height="65" /></div>
 	<div id="func_wrap">&nbsp;&nbsp;&nbsp;<img id="btn_func_terminer" class="func_btn" src="img/func_terminer.png" alt="terminer" width="33" height="33" /></div>
 	<div id="desk_wrap">
 			<div id="status_list"><img src="img/status_list.png" width="70" height="70" /></div>
-			<div id="status_count"><div id="status_count_alert">1</div><img id="status_on" src="action/status_font.php?q=26" width="70" height="70" /></div>
+			<div id="status_count"><div id="status_count_alert">1</div><img id="status_on" src="http://sshdb.com/ssm/status_font.php?q=26" width="70" height="70" /></div>
 	</div>
 
 </div>
@@ -37,17 +37,17 @@
 	<div id="mornitor_content">
 	- Count of live IP : <span id="txt_mor_livecount">10</span><br />
 	- Network Traffic : <span id="txt_mor_traffic"></span><br /><br />
-	- Mornitor IP : <span id="txt_mor_morip"></span>
+	- Status IP : <span id="txt_mornitor" style="font-size:10px;"></span>
 	
 	</div>
 	</div>
 	<div id="navi">
-	<div id="navi_t_dashboard" class="navi_title"><strong id="btn_dashboard">Dashboard</strong></div>
+	<div id="navi_t_dashboard" class="navi_title"><strong id="btn_dashboard" class="btn_dashboard">Dashboard</strong></div>
 	<div id="navi_t_dashboard" class="navi_title"><strong>Mornitoring</strong></div>
 		<ul>
 		<li class="li_1" alt="ipm">IP-Mapping</li>
 		<li class="li_2">Analytics IP</li>
-		<li class="li_1">test</li>
+		<li class="li_1">Table</li>
 		<li class="li_2">test</li>
 		<li class="li_1">test</li>
 
@@ -91,7 +91,21 @@
 		<br /><br /><br />
 	</div>
 	</div>	
-</div>
-</div>
+	
+	
+	
+	<div id="table_wrap" class="dashboard_wrap table_main">
 
+	<div id="table_title" class="dashboard_title"><h2>Information Of IP</h2></div>
+	<div id="table_content" class="dashboard_content">
+		test
+	</div>
+	
+	</div>	
+	
+	
+	
+</div>
+</div>
+<div id="test_timer"></div>
 </body>
