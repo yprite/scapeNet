@@ -4,10 +4,13 @@ LDFLAGS = -lm $(shell mysql_config --libs)
 
 all: brain_main_mysql
 
-brain_main_mysql: brain_main_mysql.o
+brain_main_mysql: brain_main_mysql.o brain_mysql.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 brain_main_mysql.o: brain_main_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+
+brain_mysql.o: ./lib/brain_mysql.c ./include/brain_mysql.h 
 	$(CC) $(CFLAGS) -c $<
 
 clean:
