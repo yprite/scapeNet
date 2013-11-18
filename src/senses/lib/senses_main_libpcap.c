@@ -52,8 +52,8 @@ void receiver_fifo(network_grub_args *n_args)
 	pthread_t t_id2;
 	int state2 = 0;
 
-	if( (pipeFd = open(".write_sense", O_RDWR)) < 0) {
-		perror("fail to call open()");
+	if( (pipeFd = open("../bin/write_sense", O_RDWR)) < 0) {
+		perror("main fail to call open()");
 		exit(1);
 	}
 
