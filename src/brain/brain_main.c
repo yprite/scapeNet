@@ -4,9 +4,15 @@
 int main(void)
 {
     struct epoll_event ev, *events;
-    int epollFd, pipeFd[4];
-    int readn, writen;
-    int isChanged=0, isCheck=0;
+    int epollFd, pipeFd[5]; // epollFd : 이벤트 폴링 파일 디스크립터 
+                            // pipeFd : 파이프 파일 디스크립터 5개 (등록할 수 있는 배열)
+
+    int readn, writen;      // readn : read한 바이트수
+                            // writen : write한 바이트수
+
+    /*아직 미완성 변수 */
+    int isChanged=0, isCheck=0; // isChanged :  상태 변경 
+    
 
     char buffer[BUFFER_SIZE];
 
@@ -26,25 +32,33 @@ int main(void)
         exit(1);
     }
 
-    if ((pipeFd[0] = open("../face/bin/read_face", O_RDWR)) < 0) {
+    if ((pipeFd[0] = open("../bin/read_face", O_RDWR)) < 0) {
         perror("fail to call open() : read_face");
         exit(1);
     }
 
-    if ((pipeFd[1] = open("../face/bin/write_face", O_RDWR)) < 0) {
+    if ((pipeFd[1] = open("../bin/write_face", O_RDWR)) < 0) {
         perror("fail to call open() : write_face");
         exit(1);
     }
 
-    if ((pipeFd[2] = open("../face/bin/read_sense", O_RDWR)) < 0) {
+    if ((pipeFd[2] = open("../bin/read_sense", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense");
         exit(1);
     }
 
-    if ((pipeFd[3] = open("../face/bin/write_sense", O_RDWR)) < 0) {
+    if ((pipeFd[3] = open("../bin/read_sense2", O_RDWR)) < 0) {
         perror("fail to call open() : write_sense");
         exit(1);
     }
+
+    if ((pipeFd[4] = open("../bin/write_sense", O_RDWR)) < 0) {
+        perror("fail to call open() : write_sense");
+        exit(1);
+    }
+
+
+
 
 
     // 만들어진 듣기 소켓을 epoll이벤트 풀에 추가한다.
@@ -54,14 +68,11 @@ int main(void)
     ev.data.fd = pipeFd[0];
     epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[0], &ev);
 
-//  ev.data.fd = pipeFd[1];
-//  epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[1], &ev);
-
     ev.data.fd = pipeFd[2];
     epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[2], &ev);
 
-//  ev.data.fd = pipeFd[3];
-//  epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[3], &ev);
+    ev.data.fd = pipeFd[3];
+    epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[3], &ev);
 
     while(1) {
         int state, i;
@@ -99,7 +110,7 @@ int main(void)
                     readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
                     if (readn > 0){
                         printf("read_Face : %s\n", buffer);
-                        write(pipeFd[3], buffer, BUFFER_SIZE);
+//                        write(pipeFd[3], buffer, BUFFER_SIZE);
                     }
                     else printf("read_face error!\n");
                 }
@@ -112,7 +123,7 @@ int main(void)
                     readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
                     if(readn >0){
                         printf("read_sense : %s\n", buffer);
-                        write(pipeFd[1], buffer, BUFFER_SIZE);
+//                        write(pipeFd[1], buffer, BUFFER_SIZE);
                     }
                     else printf("read_sense error!\n");
                 }
