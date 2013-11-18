@@ -1,5 +1,7 @@
- #include "include/brain_main.h"
-//u_info user_info[255];
+#include "include/brain_mysql.h"
+
+
+u_info user_info[255];
 
 int main(void)
 {
@@ -12,6 +14,8 @@ int main(void)
 
     /*아직 미완성 변수 */
     int isChanged=0, isCheck=0; // isChanged :  상태 변경 
+
+    int stat=0;
     
 
     char buffer[BUFFER_SIZE];
@@ -20,8 +24,20 @@ int main(void)
 
 //  user_info=(u_info*)malloc(sizeof(u_info)*255);
 
-
-
+    if(brain_mysql_init() != 0){
+       return -1;
+    }
+    brain_mysql_load(QUERY1);
+    brain_mysql_data_return();    
+    brain_mysql_data_print();
+    printf("sql_row[0] = %s\n", sql_row[0]);
+    brain_mysql_data_free();
+    printf("sql_row[0] = %s\n", sql_row[0]);
+/*
+    while((sql_row = mysql_fetch_row(sql_result))!=NULL){
+            printf("%s|%s\n", sql_row[0],sql_row[1]);
+    }
+    */
     memset(buffer, 0x00, BUFFER_SIZE);
     // 이벤트 풀의 크기만큼 events구조체를 생성한다.
     events = (struct epoll_event *)malloc(sizeof(*events) * EPOLL_SIZE);
@@ -31,52 +47,57 @@ int main(void)
         perror("epoll_create error");
         exit(1);
     }
-    printf("1\n");
+    printf("[+]epoll_create Success\n");
+
     if ((pipeFd[0] = open("../bin/read_face", O_RDWR)) < 0) {
         perror("fail to call open() : read_face");
         exit(1);
     }
+    printf("[+]pipeFd[0] open Success\n");
 
-    printf("2\n");
     if ((pipeFd[1] = open("../bin/write_face", O_RDWR)) < 0) {
         perror("fail to call open() : write_face");
         exit(1);
     }
+    printf("[+]pipeFd[1] open Success\n");
 
-    printf("3\n");
     if ((pipeFd[2] = open("../bin/read_sense", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense");
         exit(1);
     }
+    printf("[+]pipeFd[2] open Success\n");
 
-    printf("4\n");
     if ((pipeFd[3] = open("../bin/read_sense2", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense2");
         exit(1);
     }
+    printf("[+]pipeFd[3] open Success\n");
 
-    printf("5\n");
     if ((pipeFd[4] = open("../bin/write_sense", O_RDWR)) < 0) {
         perror("fail to call open() : write_sense");
         exit(1);
-    }
+    } 
+    printf("[+]pipeFd[3] open Success\n");
 
 
 
-
-
+    printf("----------------------\n");
     // 만들어진 듣기 소켓을 epoll이벤트 풀에 추가한다.
     // EPOLLIN(read) 이벤트의 발생을 탐지한다.
     ev.events = EPOLLIN;
 
     ev.data.fd = pipeFd[0];
     epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[0], &ev);
+    printf("pipeFd[0] add in event_polling\n");
 
     ev.data.fd = pipeFd[2];
     epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[2], &ev);
+    printf("pipeFd[2] add in event_polling\n");
 
     ev.data.fd = pipeFd[3];
     epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[3], &ev);
+    printf("pipeFd[3] add in event_polling\n");
+
 
     while(1) {
         int state, i;
@@ -89,14 +110,15 @@ int main(void)
 
         case 0:
             printf("No event in any pipe \n");
-/*          if(isCheck ==0 || isChanged == 0){
+          if(isCheck ==0 || isChanged == 0){
                 int i=0;
                 for(i=1; i<255; i++){
                     if(user_info[i].isStatus == 1){
                     printf(" on node( 210.118.34.%d)\n", i);
                     }
                 }
-            }*/
+                isCheck=1;
+            }
             break;
 
         default:
@@ -114,7 +136,8 @@ int main(void)
                     readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
                     if (readn > 0){
                         printf("read_Face : %s\n", buffer);
-//                        write(pipeFd[3], buffer, BUFFER_SIZE);
+/*                        if(
+                        write(pipeFd[3], buffer, BUFFER_SIZE);*/
                     }
                     else printf("read_face error!\n");
                 }
