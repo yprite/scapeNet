@@ -1,0 +1,14 @@
+CC = gcc
+CFLAGS = -Wall 
+LDFLAGS = -lm $(shell mysql_config --libs)
+
+all: brain_main_mysql
+
+brain_main_mysql: brain_main_mysql.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+brain_main_mysql.o: brain_main_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	rm -f *.o brain_main_mysql
