@@ -34,7 +34,7 @@ int query_stat;
 
 //Main Variable
 typedef struct u_info{
-    char source_ip[12];
+    char source_ip[20];
     char mac[20];
     char port[5][10];
     char up_traffic_cur[10];
@@ -43,6 +43,7 @@ typedef struct u_info{
     char down_traffic_limit[10];
     int isStatus;
 }u_info;
+u_info user_info[255];
 
 //Mysql function
 int brain_mysql_init();
