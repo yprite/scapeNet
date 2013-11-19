@@ -129,7 +129,7 @@ int main(void)
             break;
 
         case 0:
-//            printf("No event in any pipe \n");
+            printf("No event in any pipe \n");
           if(isChecked ==0 || isChanged == 0){
                 int i=0;
                 for(i=1; i<255; i++){
@@ -149,15 +149,6 @@ int main(void)
 //          1 : on 변경사하있음
 //          QoS에서 사용자의 정보가 변경되었는지 존재 유무 파악하는 데이터
    
-
-            if(isChecked == 1){
-            
-            }
-            else if(isChecked == 2){
-
-            }
-            else{
-
             for (i = 0; i < state; i++) {
                 if (events[i].data.fd == pipeFd[0]) {
                     readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
@@ -168,12 +159,12 @@ int main(void)
                     }
                     else printf("read_face error!\n");
                 }
-//              else if (events[i].data.fd == pipeFd[1]) {
-//                                  readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
-//                                  if (readn > 0) printf("write face : %s\n", buffer);
-//                                  else printf("read error!\n");
-//                           }
-                else if (events[i].data.fd == pipeFd[2]) {
+              else if (events[i].data.fd == pipeFd[2]) {
+                                  readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
+                                  if (readn > 0) printf("read_sense : %s\n", buffer);
+                                  else printf("read error!\n");
+                           }
+/*                else if (events[i].data.fd == pipeFd[3]) {
                     readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
                     if(readn >0){
                         if(1||(buffer[1] == '@')){
@@ -235,15 +226,15 @@ int main(void)
 //                        write(pipeFd[1], buffer, BUFFER_SIZE);
                     }
                     else printf("read_sense error!\n");
-                }
+			printf("buffer:%s\n", buffer);
+                }*/
 
-//              else if (events[i].data.fd == pipeFd[3]) {
-//                                  readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
-//                  if (readn > 0) printf("write sense : %s\n", buffer);
-//                                  else printf("read error!\n");
-//                 }
+              else if (events[i].data.fd == pipeFd[3]) {
+                  readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
+                  if (readn > 0) printf("read_sense2 : %s\n", buffer);
+                                  else printf("read error!\n");
+                 }
                 memset(buffer, 0x00, BUFFER_SIZE);
-            }
             }
         }
     }
