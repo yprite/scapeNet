@@ -61,7 +61,7 @@ int brain_mysql_data_copy(){
             cnt++;
         }
         
-        printf("user_info[%d]|%s|%s|%s|%s|\n", ip,sql_row[1], sql_row[2], sql_row[5], sql_row[6]);
+//        printf("user_info[%d]|%s|%s|%s|%s|\n", ip,sql_row[1], sql_row[2], sql_row[5], sql_row[6]);
 //          sprintf(user_info[ip].source_ip, "%s", sql_row[1]);
         strcpy(user_info[ip].source_ip, sql_row[1]);
         strcpy(user_info[ip].mac, sql_row[2]);
@@ -75,3 +75,12 @@ void brain_mysql_data_free(){
     mysql_free_result(sql_result);
 }
 
+void *timer_function(void *data){
+   while(1){ 
+    printf("\t\t\t\t\ttime start\n");    
+    isTime = -1;
+    sleep(60);
+    isTime = 1;
+    printf("\t\t\t\t\ttime end\n");
+    }
+}
