@@ -44,24 +44,30 @@ int brain_mysql_data_print(){
     return 0;
 }
 int brain_mysql_data_copy(){
-    char *temp[20];
+    char temp[20];
     char *ptr;
-    int ip,cnt=0;
+    int ip=0,cnt=0;
     while((sql_row = mysql_fetch_row(sql_result))!=NULL){
-        strcpy(temp, sql_row[1]);
+//        strcpy(temp, sql_row[1]);
+        sprintf(temp, "%s", sql_row[1]);
         ptr = strtok(temp, ".");
         while(ptr != NULL){
             if(cnt == 3){
                 ip=atoi(ptr);
+                cnt=0;
                 break;
             }
             ptr = strtok(NULL, ".");
             cnt++;
         }
+        
+        printf("user_info[%d]|%s|%s|%s|%s|\n", ip,sql_row[1], sql_row[2], sql_row[5], sql_row[6]);
+//          sprintf(user_info[ip].source_ip, "%s", sql_row[1]);
         strcpy(user_info[ip].source_ip, sql_row[1]);
         strcpy(user_info[ip].mac, sql_row[2]);
         strcpy(user_info[ip].up_traffic_limit, sql_row[5]);
         strcpy(user_info[ip].down_traffic_limit, sql_row[6]);
+        
     }
     return 1;
 }
