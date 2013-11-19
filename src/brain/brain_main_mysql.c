@@ -1,7 +1,7 @@
 #include "include/brain_mysql.h"
 
 
-u_info user_info[255];
+//u_info user_info[255];
 
 int main(void)
 {
@@ -29,10 +29,14 @@ int main(void)
     }
     brain_mysql_load(QUERY1);
     brain_mysql_data_return();    
-    brain_mysql_data_print();
-    printf("sql_row[0] = %s\n", sql_row[0]);
+    //brain_mysql_data_print();
+    brain_mysql_data_copy();
+./*   int ip=1;
+    for(ip=1; ip<255; ip++){
+        printf("[%d]|%s|%s|%s|%s|%s|%s|%d|\n", ip,user_info[ip].source_ip, user_info[ip].mac, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, user_info[ip].up_traffic_limit, user_info[ip].down_traffic_limit, user_info[ip].isStatus);
+    }*/
     brain_mysql_data_free();
-    printf("sql_row[0] = %s\n", sql_row[0]);
+
 /*
     while((sql_row = mysql_fetch_row(sql_result))!=NULL){
             printf("%s|%s\n", sql_row[0],sql_row[1]);
