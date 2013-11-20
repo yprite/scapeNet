@@ -48,7 +48,8 @@ typedef struct u_info{
 }u_info;
 u_info user_info[255];
 int isTime;
-
+int isNodeLive[255];
+int isCheckNode;	
 //Mysql function
 int brain_mysql_init();
 int brain_mysql_load(char*);
@@ -58,5 +59,21 @@ void brain_mysql_data_free();
 int brain_mysql_data_copy();
 
 //Main function
-int brain_main_init_data(int);// parameter 0: mysql, 1: sshdb 
-void *timer_function(void *data);
+int brain_main_init_data(int);	// 
+				// parameter 0: mysql, 1: sshdb
+				// 아직미완성, 할필요가 없을수도있음.
+
+int brain_init_db(int);		// db init
+				// parameter 0: mysql 1: sshdb
+	
+int brain_load_db(int);		//parameter
+				//-mode ==0 mysql
+				//-mode == 1 sshdb
+
+int brain_update_db(int, int ,int);	// db갱신
+					//paramtert is type int
+					//-mode == 0 mysql
+					//-mode == 1 sshdb
+
+void *timer_function(void *);
+void *check_Node(void *);
