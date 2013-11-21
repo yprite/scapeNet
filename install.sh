@@ -1,4 +1,12 @@
 #!/bin/bash
+#
+#	install.sh
+#	Install Service Script for SCAPENET
+#
+#	Created by LeeGwiro 2013. 11.
+#
+
+
 _temp="/tmp/answer.$$"
 _package="/tmp/package.$$"
 _module="/tmp/module.$$"
@@ -10,7 +18,9 @@ PN=`basename "$0"`
 VER='1.0'
 
 
-### 루트 권한으로 실행했는지 체크 ###
+#
+# @brief root 권한으로 실행했는지 체크
+#
 if [ $(id -u) -ne 0 ]
 then
 	echo "Script must be run as root. Try 'sudo ./install.sh'"
@@ -18,7 +28,9 @@ then
 fi
 
 
-### 다이얼로그 패키지 설치유무 확인 ###
+#
+# @brief dialog 패키지 설치유무 확인. 이게 없으면 실행이 안됨.
+#
 check_dialogPackage() {
 	echo "This is install script for scapeNet service."
 	echo "Check that the dialog package is installed."
@@ -44,25 +56,40 @@ check_dialogPackage() {
 }
 
 
+#
+# @brief 프로그램 instruction, version
+#
 show_version() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--msgbox "                 SCAPENET\n                   V$VER\n\nCopyright © firesale. All right reserved.\n" 0 0
 }
 
 
+#
+# @brief 프로그램 초기화면. 계속 진행하거나 종료할 수 있음.
+#
 set_package() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 1 / 6 >"\
 		--yes-label "Next"\
 		--no-label "Quit"\
-		--yesno "This step is checking the installed package. Select Next key to continue." 0 0
-	
+		--yesno "\n\n\
+		    ________ _______ ______ ______    ______     *   __    ___ ______ __________\n\
+		  /   _____/   ____ /  _   |   __  \ /  ___/  O     /  \  /  /   ___/___    ___/\n\
+		  \___   \/   /    /  /_|  |  |__| /   ___/  /S\   /    \/  /   ___/   /   /    \n\
+		 ____/   /   /___ /  ___   |   ___/   /_______|\__/  /\    /   /______/   /     \n\
+		/_______/ \______/__/   |__|__|  /_______________/__/  \__/__________/___/   TM\n\n\
+	    	 This step is checking the installed package. Select Next key to continue." 15 90
+
 	if [ $? -ne 0 ]; then rm $_temp $_package $_module $_db $_ip $_id $_password; clear; exit 0; fi
 
 	select_module
 }
 
 
+#
+# @brief 어떤 module을 선택할 것인지 선택. Pcap or NetFilter.
+#
 select_module() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 1 / 6 >"\
@@ -82,6 +109,9 @@ select_module() {
 }
 
 
+#
+# @brief 어떤 DB를 사용할 것인지 선택. MySQL or SSHDB.
+#
 select_DB() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 1 / 6 >"\
@@ -101,6 +131,9 @@ select_DB() {
 }
 
 
+#
+# @brief 서비스 사용을 위해 필요한 설치안된 패키지와 선택한 모듈, DB가 출력됨.
+#
 check_package() {
 	if [ -e $_package ]; then rm $_package; fi
 	for packageName in libpcap-dev apache2 libapache2-mod-avth-mysql libapache2-mod-php5 php5 php5-cli php5-mysql php5-gd php5-xmlrpc php5-intl php5-memcache mysql-server mysql-client libmysqlclient-dev 
@@ -134,6 +167,9 @@ check_package() {
 }
 
 
+#
+# @brief 설치하지 않은 패키지를 설치.
+#
 install_package() {
 	for package in `cat $_package`; do
 		apt-get install $package
@@ -147,6 +183,9 @@ install_package() {
 }
 
 
+#
+# @brief DB 테이블 생성.
+#
 create_table() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 2 / 6 >"\
@@ -158,10 +197,13 @@ create_table() {
 }
 
 
+#
+# @brief IP class 지정. ex) 210.118.34
+#
 set_IPclass() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 3 / 6 >"\
-		--inputbox "Try entering that you want IP class." 0 0 2>$_ip
+		--inputbox "Try entering that you want IP class.\nex) 210.118.34" 0 0 2>$_ip
 	
 	if [ $? -ne 0 ]; then set_package; fi
 
@@ -169,6 +211,9 @@ set_IPclass() {
 }
 
 
+#
+# @brief 최대 트래픽 제한 설정. default값이나 사용자 설정값을 선택할 수 있음.
+#
 set_limit_value() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 4 / 6 >"\
@@ -184,6 +229,9 @@ set_limit_value() {
 }
 
 
+#
+# @brief 관리자 ID 설정.
+#
 set_ID() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 5 / 6 >"\
@@ -195,6 +243,9 @@ set_ID() {
 }
 
 
+#
+# @brief 관리자 Password 설정.
+#
 set_password() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 5 / 6 >"\
@@ -209,6 +260,9 @@ set_password() {
 }
 
 
+#
+# @brief 서비스 시작전 최종 체크.
+#
 check_service() {
 	while true; do
 		dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
@@ -226,21 +280,6 @@ check_service() {
 		read input
 		if [ input != 0 ]; then return; fi
 	done
-}
-
-	
-set_register() {
-	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--form "Enter the information of admin to access" 0 0 0\
-		"e-mail" 2 4 "" 2 15 20 0\
-		"passward" 4 4 "" 4 15 20 0\
-		"ip" 6 4 "" 6 15 20 0 2>$_temp
-	
-	if [ ${?} -ne 0 ]; then return; fi
-	result=`cat $_temp`
-	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "" --cr-wrap\
-		--msgbox "\nYou entered:\n$result" 0 0
 }
 
 
