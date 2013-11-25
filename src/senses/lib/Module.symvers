@@ -1,2 +1,0 @@
-0x0f803982	send_myfifo	/home/khg/Project/scapeNet/src/senses/lib/senses_fifoModule_netfilter	EXPORT_SYMBOL
-0x11fe12ba	set_kfifo	/home/khg/Project/scapeNet/src/senses/lib/senses_fifoModule_netfilter	EXPORT_SYMBOL
