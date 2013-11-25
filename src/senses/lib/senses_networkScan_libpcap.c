@@ -320,7 +320,9 @@ int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, 
 
 		p_node_status->node[arpheader->spa[3]].status = 1;
 
-		sprintf(result,"echo D~%d.%d.%d.%d > ../bin/read_sense", arpheader->spa[0], arpheader->spa[1], arpheader->spa[2], arpheader->spa[3]);
+		sprintf(result,"echo D~%d.%d.%d.%dL%02x:%02x:%02x:%02x:%02x:%02x > ../bin/read_sense", 
+		arpheader->spa[0], arpheader->spa[1], arpheader->spa[2], arpheader->spa[3], 
+		arpheader->sha[0], arpheader->sha[1], arpheader->sha[2], arpheader->sha[3], arpheader->sha[4], arpheader->sha[5]);
 
 	}
 
