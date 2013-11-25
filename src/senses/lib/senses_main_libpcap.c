@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "../include/senses_networkScan_libpcap.h"
-#include "../include/senses_portscan_libpcap.h"
+#include "../include/senses_portscan.h"
 
 #define BUFFER_SIZE 255
 

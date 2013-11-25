@@ -361,12 +361,12 @@ void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr,
 		char result[1024] = {0,};
 		
 		if(c_src_ip[0] == 210 && c_src_ip[1] == 118 && c_src_ip[2] == 34){
-			sprintf(result,"echo D@%d.%d.%d.%dL%dLu%dL%d.%d.%d.%d > ../bin/read_sense", c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3], ntohs(tcp->dest), pkthdr->len, c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3]);
+			sprintf(result,"echo D@%d.%d.%d.%dL%dLu%dL%d.%d.%d.%d > ../bin/read_sense2", c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3], ntohs(tcp->dest), pkthdr->len, c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3]);
 			
 		// printf("%d ", *((u_char*)(&n_ip_temp)+i) );
 		}
 		else{
-			sprintf(result,"echo D@%d.%d.%d.%dL%dLd%dL%d.%d.%d.%d > ../bin/read_sense", c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3], ntohs(tcp->source), pkthdr->len, c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3]);
+			sprintf(result,"echo D@%d.%d.%d.%dL%dLd%dL%d.%d.%d.%d > ../bin/read_sense2", c_dst_ip[0], c_dst_ip[1], c_dst_ip[2], c_dst_ip[3], ntohs(tcp->source), pkthdr->len, c_src_ip[0], c_src_ip[1], c_src_ip[2], c_src_ip[3]);
 			
 		}
 

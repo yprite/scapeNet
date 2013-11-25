@@ -18,8 +18,8 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 
-#include "senses_protocol_libpcap.h"
-#include "senses_nodeKill_libpcap.h"
+#include "senses_protocol.h"
+#include "senses_nodeKill.h"
 
 #define MAXBYTES2CAPTURE 2048
 

@@ -4,19 +4,19 @@ LDFLAGS = -lm -lpcap -lpthread
 
 all: scan
 
-scan: senses_main_libpcap.o senses_networkScan_libpcap.o senses_nodeKill_libpcap.o senses_portscan_libpcap.o
+scan: senses_main_libpcap.o senses_networkScan_libpcap.o senses_nodeKill.o senses_portscan.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-senses_main_libpcap.o: ./lib/senses_main_libpcap.c ./include/senses_networkScan_libpcap.h ./include/senses_portscan_libpcap.h
+senses_main_libpcap.o: ./lib/senses_main_libpcap.c ./include/senses_networkScan_libpcap.h ./include/senses_portscan.h
 	$(CC) $(CFLAGS) -c $<
 
 senses_networkScan_libpcap.o: ./lib/senses_networkScan_libpcap.c ./include/senses_networkScan_libpcap.h
 	$(CC) $(CFLAGS) -c $<
 
-senses_nodeKill_libpcap.o: ./lib/senses_nodeKill_libpcap.c ./include/senses_nodeKill_libpcap.h
+senses_nodeKill.o: ./lib/senses_nodeKill.c ./include/senses_nodeKill.h
 	$(CC) $(CFLAGS) -c $<
 
-senses_portscan_libpcap.o: ./lib/senses_portscan_libpcap.c ./include/senses_portscan_libpcap.h
+senses_portscan.o: ./lib/senses_portscan.c ./include/senses_portscan.h
 	$(CC) $(CFLAGS) -c $<
 
 clean:
