@@ -61,7 +61,7 @@ check_dialogPackage() {
 #
 show_version() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--msgbox "                 SCAPENET\n                   V$VER\n\nCopyright © firesale. All right reserved.\n" 0 0
+		--msgbox "                 SCAPENET\n                   V$VER\n\nCopyright © firesale. All rights reserved.\n" 0 0
 }
 
 
