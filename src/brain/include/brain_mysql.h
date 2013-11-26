@@ -7,6 +7,8 @@
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <time.h>
+#include <sys/time.h>
 
 //pthread header
 #include <pthread.h>
@@ -30,26 +32,30 @@
 
 //Mysql Variable
 
-MYSQL *connection, conn;
+MYSQL *connection, *connection2, conn, conn2;
 MYSQL_RES *sql_result;
 MYSQL_ROW sql_row;
-int query_stat;
+int query_stat, query_stat2;
 
 //Main Variable
 typedef struct u_info{
     char source_ip[20];
     char mac[20];
-    char port[5][10];
+//    char port[5][10];
     int up_traffic_cur;
     int down_traffic_cur;
     char up_traffic_limit[10];
     char down_traffic_limit[10];
+    int up_count;
+    int down_count;
     int isStatus;
 }u_info;
 u_info user_info[255];
 int isTime;
+int isTimeOn;
 int isNodeLive[255];
-int isCheckNode;	
+int isCheckNode;
+int isChecked;	
 //Mysql function
 int brain_mysql_init();
 int brain_mysql_load(char*);
@@ -70,10 +76,10 @@ int brain_load_db(int);		//parameter
 				//-mode ==0 mysql
 				//-mode == 1 sshdb
 
-int brain_update_db(int, int ,int);	// db갱신
-					//paramtert is type int
-					//-mode == 0 mysql
-					//-mode == 1 sshdb
-
+int brain_update_db(int,int,int,int,int);	// db갱신
+						//paramtert is type int
+						//-mode == 0 mysql
+						//-mode == 1 sshdb
+int  write_logfile(char *buffer);
 void *timer_function(void *);
 void *check_Node(void *);
