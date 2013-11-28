@@ -1,0 +1,29 @@
+CC = gcc
+CFLAGS = -Wall
+LDFLAGS = -lm -lpcap -lpthread
+
+obj-m = lib/senses_fifoModule_netfilter.o lib/senses_scanModule_netfilter.o
+KDIR := /lib/modules/$(shell uname -r)/build
+PWD := $(shell pwd)/lib
+
+all: scan
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+
+scan: senses_main_netfilter.o senses_networkScan_netfilter.o senses_nodeKill_netfilter.o senses_portscan_netfilter.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+senses_main_netfilter.o: ./lib/senses_main_netfilter.c ./include/senses_networkScan_netfilter.h ./include/senses_portscan_netfilter.h
+	$(CC) $(CFLAGS) -c $<
+
+senses_networkScan_netfilter.o: ./lib/senses_networkScan_netfilter.c ./include/senses_networkScan_netfilter.h
+	$(CC) $(CFLAGS) -c $<
+
+senses_nodeKill_netfilter.o: ./lib/senses_nodeKill_netfilter.c ./include/senses_nodeKill_netfilter.h
+	$(CC) $(CFLAGS) -c $<
+
+senses_portscan_netfilter.o: ./lib/senses_portscan_netfilter.c ./include/senses_portscan_netfilter.h
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	rm -f *.o scan
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules clean
