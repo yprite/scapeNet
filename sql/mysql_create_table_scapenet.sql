@@ -12,4 +12,4 @@ create table admin_info(
 pid int(10) not null primary key,
 ip varchar(20),
 passwd varchar(20)
-}
+);
