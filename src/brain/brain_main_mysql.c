@@ -131,7 +131,7 @@ int main(void)
     }
     printf("\t[+]pipeFd[5] open Success\n");
     if ((pipeFd[6] = open("../bin/write_php", O_RDWR|O_SYNC)) < 0) {
-        perror("fail to call open() : write_sense");
+        perror("fail to call open() : write_php");
         exit(1);
     }
     printf("\t[+]pipeFd[6] open Success\n");
