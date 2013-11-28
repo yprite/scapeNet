@@ -7,3 +7,9 @@ down_traffic_cur varchar(10),
 up_traffic_limit varchar(10),
 down_traffic_limit varchar(10),
 isStatus varchar(2));
+
+create table admin_info(
+pid int(10) not null primary key,
+ip varchar(20),
+passwd varchar(20)
+);
