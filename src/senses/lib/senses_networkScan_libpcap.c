@@ -372,7 +372,7 @@ void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr,
 			
 		}
 
-		//printf("%s\n", result);
+		printf("%s\n", result);
 		/*if ((writen = write(pipeFd, result, strlen(result))) < 0) {
 			perror("write error");
 			exit(1);
