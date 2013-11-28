@@ -93,6 +93,9 @@ void print_traffic(void) {
 	//printk("Sourcee Port %d\n", ntohs(tcp_header->source) );
 	//printk("Dest Port %d\n\n", ntohs(tcp_header->dest) );
 
+	if(sip[3] == 1 || tip[3] == 1)
+		return ;
+
 	if(sip[0] == 210 && sip[1] == 118 && sip[2] == 34){
 		sprintf(buf,"D@%d.%d.%d.%dL%dLu%dL%d.%d.%d.%d", 
 		sip[0], sip[1], sip[2], sip[3], 
@@ -116,8 +119,10 @@ void print_arp(void)
 		return ;
 
 	if(ntohs(arp_header->ar_hrd) == 1 && ntohs(arp_header->ar_pro) == 0x0800) {
-		printk("Receiver IP : ");
+		if(arp_header->ar_sip[3] == 1)
+			return ;
 
+		printk("Receiver IP : ");
 		for(i=0; i<4; i++)
 			printk("%d.", arp_header->ar_sip[i]);
 		printk("\n");
