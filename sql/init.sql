@@ -19,6 +19,9 @@
 -- Table structure for table `admin_info`
 --
 
+
+DROP database IF EXISTS scapenet;
+
 create database scapenet;
 use scapenet;
 DROP TABLE IF EXISTS `admin_info`;
