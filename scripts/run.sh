@@ -67,9 +67,9 @@ check_service() {
 		case $progressLevel in
 			0) check_process "apache2";;
 			1) check_process "$DB";;
-			2) check_process "brain_main";;
-			3) check_process "brain_write";;
-			4) check_process "senses_scan";;
+			2) check_process "brain_main_mysql";;
+			3) check_process "brain_write_php";;
+			4) check_process "scan";;
 			5) exit 0;;
 		esac
 		let progressLevel++
@@ -92,29 +92,29 @@ check_process() {
 				let progressValue+=20;;
 			"$DB" ) status[1]=2
 				let progressValue+=20;;
-			"brain_main" ) status[2]=2
+			"brain_main_mysql" ) status[2]=2
 				let progressValue+=20;;
-			"brain_write" ) status[3]=2
+			"brain_write_php" ) status[3]=2
 				let progressValue+=20;;
-			"senses_scan" ) status[4]=2
+			"scan" ) status[4]=2
 				let progressValue+=20;;
 		esac
 	else
 		case "$1" in
 			"apache2" ) status[0]=4;;
 			"$DB" ) status[1]=4;;
-			"brain_main" ) status[2]=4
-				../src/brain_main
+			"brain_main_mysql" ) status[2]=4
+				../src/brain/brain_main_mysql &
 				{ for I in $(seq 1 100) ; do
 					echo $I
 					sleep 0.1
 				done
 				echo 100; } | dialog --gauge "Please wait for running process..." 6 60 0
 				;;
-			"brain_write" ) status[3]=4
-				../src/brain_write;;
-			"senses_scan" ) status[4]=4
-				../src/senses_scan;;
+			"brain_write_php" ) status[3]=4
+				../src/brain/brain_write_php &;;
+			"scan" ) status[4]=4
+				../src/senses/scan &;;
 		esac
 	fi
 }

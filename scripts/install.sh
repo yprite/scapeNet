@@ -11,9 +11,6 @@ _temp="/tmp/answer.$$"
 _package="/tmp/package.$$"
 _module="/tmp/module.$$"
 _db="/tmp/db.$$"
-_ip="/tmp/ip.$$"
-_id="/tmp/id.$$"
-_password="/tmp/password.$$"
 PN=`basename "$0"`
 VER='1.0'
 
@@ -81,7 +78,7 @@ set_package() {
 		/_______/ \______/__/   |__|__|  /_______________/__/  \__/__________/___/   TM\n\n\
 	    	 This step is checking the installed package. Select Next key to continue." 15 90
 
-	if [ $? -ne 0 ]; then rm $_temp $_package $_module $_db $_ip $_id $_password; clear; exit 0; fi
+	if [ $? -ne 0 ]; then rm $_temp $_package $_module $_db; clear; exit 0; fi
 
 	select_module
 }
@@ -136,7 +133,7 @@ select_DB() {
 #
 check_package() {
 	if [ -e $_package ]; then rm $_package; fi
-	for packageName in libpcap-dev apache2 libapache2-mod-avth-mysql libapache2-mod-php5 php5 php5-cli php5-mysql php5-gd php5-xmlrpc php5-intl php5-memcache mysql-server mysql-client libmysqlclient-dev 
+	for packageName in libpcap-dev apache2 libapache2-mod-php5 php5 php5-cli php5-mysql php5-gd php5-xmlrpc php5-intl php5-memcache mysql-server mysql-client libmysqlclient-dev 
 	do
 		check=`dpkg -l | grep -w $packageName | awk '{print $2}' | grep -w $packageName`
 		if [ "$check" = "" ]
@@ -151,7 +148,14 @@ check_package() {
 		echo $line >> $_temp 
 		echo "\n" >> $_temp 
 	done < $_package
-	printPackage=`cat $_temp`
+	#printPackage=`cat $_temp`
+	sizePackage=`stat -c %s $_temp`
+	if [ $sizePackage -eq 0 ]
+	then
+		printPackage="done"
+	else
+		printPackage=`cat $_temp`
+	fi
 
 	#DB정보 run.sh에 알려줌
 	sed -e "/^DB/s/DB=......./DB=\"$printDB\"/g" ./run.sh > ./run.sh.tmp
@@ -183,10 +187,39 @@ install_package() {
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 3 / 5 >"\
-		--msgbox "Install Complate!" 0 0
+		--msgbox "\n         Install Complate!" 7 40
 
-	create_table
+	create_binary
 }
+
+
+#
+# @brief 
+#
+create_binary() {
+
+	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
+		--title "< 4 / 5 >"\
+		--msgbox "\n     now, create binary files." 7 40
+	
+	if [ $_module = "NetFilter" ]
+	then
+		cd ../src/senses; make -f Makefile_netfilter; cd -
+	else
+		cd ../src/senses; make -f Makefile_libpcap; cd -
+	fi
+
+	cd ../src/brain; make -f Makefile_mysql; cd -
+
+	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
+		--title "< 4 / 5 >"\
+		--msgbox "\n  binary files creation succeeded." 7 40
+
+	if [ $? -ne 0 ]; then set_package; fi
+
+	create_table	
+}
+
 
 
 #
@@ -194,11 +227,17 @@ install_package() {
 #
 create_table() {	
 
-	./mysql -uroot -p1234 scapenet < ../sql/init.sql
+	mysql -uroot -p1234 < ../sql/init.sql
+	{ for I in $(seq 1 100) ; do
+		echo $I
+		sleep 0.01
+	done
+	echo 100; } | dialog --gauge "Please wait for create database table..." 6 60 0
+
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 4 / 5 >"\
-		--msgbox "Database table creation succeeded" 0 0
+		--title "< 5 / 5 >"\
+		--msgbox "\n  Database table creation succeeded." 7 40
 
 	if [ $? -ne 0 ]; then set_package; fi
 
@@ -211,7 +250,7 @@ create_table() {
 #
 service_start() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 5 / 5 >"\
+		--title "< The NMS for ALL >"\
 		--yes-label "Start"\
 		--no-label "Cancel"\
 		--yesno "Install succeeded!\nScapenet needs to start the administrator ID, Password and system IP Class. Look at the below that default value.\n\nIP Class : 210.118.34.*\nID : admin\nPW : 1234\n\nDo you want to run now?" 0 0 2>$_temp

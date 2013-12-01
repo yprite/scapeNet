@@ -19,6 +19,8 @@
 -- Table structure for table `admin_info`
 --
 
+create database scapenet;
+use scapenet;
 DROP TABLE IF EXISTS `admin_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
