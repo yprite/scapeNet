@@ -45,7 +45,7 @@ check_dialogPackage() {
 		read input
 		if [ "$input" = "y" ]
 		then
-			sudo apt-get install dialog
+			sudo apt-get install dialog -y
 			echo "install success."
 			sleep 1
 		else
@@ -61,7 +61,7 @@ check_dialogPackage() {
 #
 show_version() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--msgbox "                 SCAPENET\n                   V$VER\n\nCopyright © firesale. All rights reserved.\n" 0 0
+		--msgbox "                 SCAPENET\n                   V$VER\n\nCopyright © firesale. All right reserved.\n" 0 0
 }
 
 
@@ -70,7 +70,7 @@ show_version() {
 #
 set_package() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 1 / 6 >"\
+		--title "< The NMS for ALL >"\
 		--yes-label "Next"\
 		--no-label "Quit"\
 		--yesno "\n\n\
@@ -92,7 +92,7 @@ set_package() {
 #
 select_module() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 1 / 6 >"\
+		--title "< 1 / 5 >"\
 		--ok-label "Next"\
 		--cancel-label "Prev"\
 		--radiolist "You can use this to present a list of choices which can be turned on or off.\
@@ -114,13 +114,13 @@ select_module() {
 #
 select_DB() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 1 / 6 >"\
+		--title "< 2 / 5 >"\
 		--ok-label "Next"\
 		--cancel-label "Prev"\
 		--radiolist "You can use this to present a list of choices which can be turned on or off.\
 		You can use the UP/DOWN arrow keys, Press SPACE to toggle an option on or off.\n\n\
 		Which of the following are databases?" 0 0 0 \
-		"MySQL"	"Use a MySQL database." on \
+		"mysql"	"Use a MySQL database." on \
 		"SSHDB"	"Use a SSHDB" off 2>$_db
 
 	case $? in
@@ -153,8 +153,14 @@ check_package() {
 	done < $_package
 	printPackage=`cat $_temp`
 
+	#DB정보 run.sh에 알려줌
+	sed -e "/^DB/s/DB=......./DB=\"$printDB\"/g" ./run.sh > ./run.sh.tmp
+	mv ./run.sh.tmp ./run.sh
+	chown leegwiro ./run.sh
+	chmod +x ./run.sh
+
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 1 / 6 >"\
+		--title "< 3 / 5 >"\
 		--yes-label "INSTALL"\
 		--no-label "Cancel"\
 		--yesno "Uninstalled package and selected module/DB list.\nEnter the INSTALL key to install.\n\n*MODULE : $printModule\n*DB : $printDB\n*Uninstalled Package :\n$printPackage" 0 0
@@ -172,11 +178,11 @@ check_package() {
 #
 install_package() {
 	for package in `cat $_package`; do
-		apt-get install $package
+		apt-get install $package -y
 	done < $_package
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 1 / 6 >"\
+		--title "< 3 / 5 >"\
 		--msgbox "Install Complate!" 0 0
 
 	create_table
@@ -186,100 +192,35 @@ install_package() {
 #
 # @brief DB 테이블 생성.
 #
-create_table() {
+create_table() {	
+
+	./mysql -uroot -p1234 scapenet < ../sql/init.sql
+
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 2 / 6 >"\
-		--msgbox "Database Initializing..." 0 0
+		--title "< 4 / 5 >"\
+		--msgbox "Database table creation succeeded" 0 0
 
 	if [ $? -ne 0 ]; then set_package; fi
 
-	set_IPclass
+	service_start
 }
 
 
 #
-# @brief IP class 지정. ex) 210.118.34
+# @brief 서비스 지금 실행할꺼야??
 #
-set_IPclass() {
+service_start() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 3 / 6 >"\
-		--inputbox "Try entering that you want IP class.\nex) 210.118.34" 0 0 2>$_ip
-	
-	if [ $? -ne 0 ]; then set_package; fi
-
-	set_limit_value
-}
-
-
-#
-# @brief 최대 트래픽 제한 설정. default값이나 사용자 설정값을 선택할 수 있음.
-#
-set_limit_value() {
-	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 4 / 6 >"\
-		--yes-label "Default"\
-		--no-label "User Set"\
-		--yesno "Configurate to traffic" 0 0 2>$_temp
+		--title "< 5 / 5 >"\
+		--yes-label "Start"\
+		--no-label "Cancel"\
+		--yesno "Install succeeded!\nScapenet needs to start the administrator ID, Password and system IP Class. Look at the below that default value.\n\nIP Class : 210.118.34.*\nID : admin\nPW : 1234\n\nDo you want to run now?" 0 0 2>$_temp
 
 	case $? in
-		0) set_ID;;
-		1) ;;
+		0) ./run.sh; exit 0;;
+		1) set_package;;
 		255) set_package;;
 	esac
-}
-
-
-#
-# @brief 관리자 ID 설정.
-#
-set_ID() {
-	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 5 / 6 >"\
-		--inputbox "Try entering that you want ID below." 0 0 2>$_id
-	
-	if [ $? -ne 0 ]; then set_package; fi
-	
-	set_password
-}
-
-
-#
-# @brief 관리자 Password 설정.
-#
-set_password() {
-	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 5 / 6 >"\
-		--insecure "$@"\
-		--passwordbox "Try entering that you want PASSWORD below." 10 0 2>$_password
-	
-	if [ $? -ne 0 ]; then set_package; fi
-	
-	#프록시, 메인 실행~
-	
-	check_service
-}
-
-
-#
-# @brief 서비스 시작전 최종 체크.
-#
-check_service() {
-	while true; do
-		dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-			--title "< 6 / 6 >"\
-			--mixedgauge "" 0 0 33\
-			"Apache" "0" \
-			"DB" "1" \
-			"brain-main" "2" \
-			"senses-main" "3" \
-			""	"8" \
-			"service1" "4" \
-			"service2" "5" \
-			"service3" "6" \
-			"service4" "7" 
-		read input
-		if [ input != 0 ]; then return; fi
-	done
 }
 
 
