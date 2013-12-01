@@ -40,7 +40,7 @@ int __init init_fifo_test(void)
 	unsigned int i;
 	
 	printk("fifo start\n");
-	filp1 = filp_open("../bin/read_sense", O_WRONLY, S_IRUSR|S_IWUSR);
+	filp1 = filp_open("/tmp/read_sense", O_WRONLY, S_IRUSR|S_IWUSR);
 	if (IS_ERR(filp1)) {
 		const int open_errno = -PTR_ERR(filp1);
         printk("fifo1 open error: %s\n errno=%d", __FUNCTION__, open_errno);
@@ -49,7 +49,7 @@ int __init init_fifo_test(void)
 		printk("fifo1 open success\n");
 	}
 
-	filp = filp_open("../bin/read_sense2", O_WRONLY, S_IRUSR|S_IWUSR);
+	filp = filp_open("/tmp/read_sense2", O_WRONLY, S_IRUSR|S_IWUSR);
 	if (IS_ERR(filp)) {
 		const int open_errno = -PTR_ERR(filp);
         printk("fifo open error: %s\n errno=%d", __FUNCTION__, open_errno);
