@@ -122,7 +122,7 @@ static int thread_loop(void *data)
 		msleep(1);
 		
 		if(flag == 1) {
-			msleep(3300);
+			msleep(3500);
 			flag = 0;
 			continue;
 		}
