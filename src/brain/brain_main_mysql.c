@@ -41,25 +41,25 @@ int main(void)
 	if(-1 == mkfifo("/tmp/read_sense", 0666)){
 		perror("read_sense mkae");
 	}
-	----*/
-	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+	if(-1 == mkfifo("/tmp/read_sense2", 0666)){
 		perror("read_sense mkae");
 	}
-	----*/
-	if(-1 == mkfifo("/tmp/read_sense", 0666)){
-		perror("read_sense mkae");
-	}----*/
-	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+	if(-1 == mkfifo("/tmp/read_sense3", 0666)){
 		perror("read_sense mkae");
 	}
-	----*/
-	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+	if(-1 == mkfifo("/tmp/write_sense", 0666)){
 		perror("read_sense mkae");
-	}----*/
-	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+	}
+	if(-1 == mkfifo("/tmp/read_face", 0666)){
 		perror("read_sense mkae");
-	}----*/
-	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+	}
+	if(-1 == mkfifo("/tmp/read_face2", 0666)){
+		perror("read_sense mkae");
+	}
+	if(-1 == mkfifo("/tmp/write_face", 0666)){
+		perror("read_sense mkae");
+	}
+	if(-1 == mkfifo("/tmp/write_php", 0666)){
 		perror("read_sense mkae");
 	}
    
