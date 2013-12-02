@@ -36,6 +36,32 @@ int main(void)
     
     time_t timer;
     struct tm *t;
+    
+/*---------------MAKE FIFO -------------------*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense mkae");
+	}
+	----*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense mkae");
+	}
+	----*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense mkae");
+	}----*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense mkae");
+	}
+	----*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense mkae");
+	}----*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense mkae");
+	}----*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense mkae");
+	}
    
 //    int temp_u=0, temp_d=0; 
 
