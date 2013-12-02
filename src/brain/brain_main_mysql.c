@@ -39,28 +39,28 @@ int main(void)
     
 /*---------------MAKE FIFO -------------------*/
 	if(-1 == mkfifo("/tmp/read_sense", 0666)){
-		perror("read_sense mkae");
+		perror("read_sense make");
 	}
 	if(-1 == mkfifo("/tmp/read_sense2", 0666)){
-		perror("read_sense mkae");
+		perror("read_sense2 mkae");
 	}
 	if(-1 == mkfifo("/tmp/read_sense3", 0666)){
-		perror("read_sense mkae");
+		perror("read_sense3 mkae");
 	}
 	if(-1 == mkfifo("/tmp/write_sense", 0666)){
-		perror("read_sense mkae");
+		perror("write_sense make");
 	}
 	if(-1 == mkfifo("/tmp/read_face", 0666)){
-		perror("read_sense mkae");
+		perror("read_face make");
 	}
 	if(-1 == mkfifo("/tmp/read_face2", 0666)){
-		perror("read_sense mkae");
+		perror("read_face2 make");
 	}
 	if(-1 == mkfifo("/tmp/write_face", 0666)){
-		perror("read_sense mkae");
+		perror("write_face make");
 	}
 	if(-1 == mkfifo("/tmp/write_php", 0666)){
-		perror("read_sense mkae");
+		perror("write_php make");
 	}
    
 //    int temp_u=0, temp_d=0; 
