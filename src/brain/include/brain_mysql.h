@@ -1,4 +1,3 @@
-
 //system header
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +12,7 @@
 //pthread header
 #include <pthread.h>
 
-//mysq header
+//mysql header
 #include "/usr/include/mysql/mysql.h"
 
 //system header
@@ -30,8 +29,10 @@
 //Mysql Query
 #define QUERY1 "select * from ip_data"
 
-//Mysql Variable
+//Make piepfile 
+#define FIFO_FILE "/tmp/"
 
+//Mysql Variable
 MYSQL *connection, *connection2, conn, conn2;
 MYSQL_RES *sql_result;
 MYSQL_ROW sql_row;
