@@ -1,0 +1,2 @@
+
+mysql -uroot -p1234 > init.sql
