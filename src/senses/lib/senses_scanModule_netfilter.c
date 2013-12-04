@@ -97,11 +97,11 @@ void print_traffic(void) {
 		return ;
 
 	if(sip[0] == 210 && sip[1] == 118 && sip[2] == 34){
-		sprintf(buf,"D@%d.%d.%d.%dL%dLu%dL%d.%d.%d.%d", 
+		sprintf(buf,"D@%d.%d.%d.%dL%dLu%dL%d.%d.%d.%d\n", 
 		sip[0], sip[1], sip[2], sip[3], 
 		ntohs(tcp_header->dest), ntohs(ip_header->tot_len), tip[0], tip[1], tip[2], tip[3]);
 	} else {
-		sprintf(buf,"D@%d.%d.%d.%dL%dLd%dL%d.%d.%d.%d", 
+		sprintf(buf,"D@%d.%d.%d.%dL%dLd%dL%d.%d.%d.%d\n", 
 		tip[0], tip[1], tip[2], tip[3], 
 		ntohs(tcp_header->source), ntohs(ip_header->tot_len), sip[0], sip[1], sip[2], sip[3]);
 	}

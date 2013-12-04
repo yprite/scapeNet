@@ -6,7 +6,7 @@
 int main(void)
 {
     struct epoll_event ev, *events;
-    int epollFd, pipeFd[7]; // epollFd : 이벤트 폴링 파일 디스크립터 
+    int epollFd, pipeFd[8]; // epollFd : 이벤트 폴링 파일 디스크립터 
                             // pipeFd : 파이프 파일 디스크립터 6개 (등록할 수 있는 배열)
 	// pipeFd[0] : pipe file read_face
 	// pipeFd[1] : pipe file write_face
@@ -36,6 +36,32 @@ int main(void)
     
     time_t timer;
     struct tm *t;
+    
+/*---------------MAKE FIFO -------------------*/
+	if(-1 == mkfifo("/tmp/read_sense", 0666)){
+		perror("read_sense make");
+	}
+	if(-1 == mkfifo("/tmp/read_sense2", 0666)){
+		perror("read_sense2 mkae");
+	}
+	if(-1 == mkfifo("/tmp/read_sense3", 0666)){
+		perror("read_sense3 mkae");
+	}
+	if(-1 == mkfifo("/tmp/write_sense", 0666)){
+		perror("write_sense make");
+	}
+	if(-1 == mkfifo("/tmp/read_face", 0666)){
+		perror("read_face make");
+	}
+	if(-1 == mkfifo("/tmp/read_face2", 0666)){
+		perror("read_face2 make");
+	}
+	if(-1 == mkfifo("/tmp/write_face", 0666)){
+		perror("write_face make");
+	}
+	if(-1 == mkfifo("/tmp/write_php", 0666)){
+		perror("write_php make");
+	}
    
 //    int temp_u=0, temp_d=0; 
 
@@ -96,45 +122,51 @@ int main(void)
     printf("Pipe File Open Start\n");
     printf("\t[+]epoll_create Success\n");
 
-    if ((pipeFd[0] = open("../bin/read_face", O_RDWR)) < 0) {
+    if ((pipeFd[0] = open("./www/bin/read_face", O_RDWR)) < 0) {
         perror("fail to call open() : read_face");
         exit(1);
     }
     printf("\t[+]pipeFd[0] open Success\n");
 
-    if ((pipeFd[1] = open("../bin/write_face", O_RDWR|O_SYNC)) < 0) {
+    if ((pipeFd[1] = open("/tmp/write_face", O_RDWR|O_SYNC)) < 0) {
         perror("fail to call open() : write_face");
         exit(1);
     }
     printf("\t[+]pipeFd[1] open Success\n");
 
-    if ((pipeFd[2] = open("../bin/read_sense", O_RDWR)) < 0) {
+    if ((pipeFd[2] = open("/tmp/read_sense", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense");
         exit(1);
     }
     printf("\t[+]pipeFd[2] open Success\n");
 
-    if ((pipeFd[3] = open("../bin/read_sense2", O_RDWR)) < 0) {
+    if ((pipeFd[3] = open("/tmp/read_sense2", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense2");
         exit(1);
     }
     printf("\t[+]pipeFd[3] open Success\n");
 
-    if ((pipeFd[4] = open("../bin/write_sense", O_RDWR|O_SYNC)) < 0) {
+    if ((pipeFd[4] = open("/tmp/write_sense", O_RDWR|O_SYNC)) < 0) {
         perror("fail to call open() : write_sense");
         exit(1);
     }
     printf("\t[+]pipeFd[4] open Success\n");
-    if ((pipeFd[5] = open("../../log/error.log", O_RDWR | O_APPEND | O_CREAT)) < 0){
+    if ((pipeFd[5] = open("/tmp/error.log", O_RDWR | O_APPEND | O_CREAT)) < 0){
 	perror("fail to call open() : error.log");
 	exit(1);
     }
     printf("\t[+]pipeFd[5] open Success\n");
-    if ((pipeFd[6] = open("../bin/write_php", O_RDWR|O_SYNC)) < 0) {
-        perror("fail to call open() : write_php");
+    if ((pipeFd[6] = open("/tmp/write_php", O_RDWR|O_SYNC)) < 0) {
+        perror("fail to call open() : write_sense");
         exit(1);
     }
     printf("\t[+]pipeFd[6] open Success\n");
+    
+	if ((pipeFd[7] = open("/tmp/read_sense3", O_RDWR|O_SYNC)) < 0) {
+        perror("fail to call open() : write_sense");
+        exit(1);
+    }
+    printf("\t[+]pipeFd[7] open Success\n");
 
     printf("------------------------------\n");
     printf("Event Polling System start\n");
@@ -152,13 +184,17 @@ int main(void)
 
     ev.data.fd = pipeFd[3];
     epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[3], &ev);
-    printf("\t[+]pipeFd[3] add in event_polling\n");
+	printf("\t[+]pipeFd[3] add in event_polling\n");
+
+	ev.data.fd = pipeFd[7];
+    epoll_ctl(epollFd, EPOLL_CTL_ADD, pipeFd[7], &ev);
+	printf("\t[+]pipeFd[7] add in event_polling\n");
+
     printf("------------------------------\n");
     printf("Service Start\n");
     printf("------------------------------\n");
-    int abc =0;
     while(1) {
-        int state, i,j;
+        int state, i;
         // epoll이벤트 풀에서 이벤트가 발생했는지를 검사한다.
         state = epoll_wait(epollFd, events, EPOLL_SIZE, 2000);
         switch(state) {
@@ -189,17 +225,65 @@ int main(void)
 //          1 : on 변경사하있음
 //          QoS에서 사용자의 정보가 변경되었는지 존재 유무 파악하는 데이터
         	for (i = 0; i < state; i++) {	
-			abc++;		
-                	if (events[i].data.fd == pipeFd[0]) {
-	                	readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
-		                if (readn > 0){
-        	                	printf("read_Face : %s\n", buffer);
-/*                        if(
-                        write(pipeFd[3], buffer, BUFFER_SIZE);*/
-				}
-				else printf("read_face error!\n");
-                	}
-			else if (events[i].data.fd == pipeFd[2]) {
+              	if (events[i].data.fd == pipeFd[0]) {
+	    	       	readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
+		            if (readn > 0){
+							char write_temp[BUFFER_SIZE],write_temp2[BUFFER_SIZE];
+							char *ptr_temp,*ptr_ip,*ptr_qos;
+							char temp3[254],temp4[254];
+							int ip=0;
+							int i=0,j=0,returnbyte3=0;
+                       		write(pipeFd[4], buffer, BUFFER_SIZE);
+							sprintf(write_temp, "%s", buffer);
+							if(write_temp[0] == 't'){
+								execv("/bin/bash/", write_temp);
+							}
+							ptr_temp = strtok(write_temp, " ");
+							if(strcmp(ptr_temp, "k")==0){
+								ptr_temp = strtok(NULL, " ");
+								ptr_ip=strtok(ptr_temp, ".");
+								for(i=1; i<=3; i++){
+									ptr_ip = strtok(NULL, ".");		
+									ip = atoi(ptr_ip);
+								}
+								sprintf(write_temp2, "%d:0:0:4E",ip);
+								write(pipeFd[6], write_temp2, strlen(write_temp2));
+								printf("kill : %s\n", write_temp2);
+								ptr_temp = NULL;
+								ptr_ip = NULL;
+								ip =0;
+							}
+							else if(strcmp(ptr_temp, "p") == 0){
+								ptr_temp = strtok(NULL, " ");
+								ptr_ip=strtok(ptr_temp, ".");
+								for(i=1; i<=3; i++){
+									ptr_ip = strtok(NULL, ".");		
+									ip = atoi(ptr_ip);
+								}
+								sprintf(write_temp2, "%d:0:0:5E",ip);
+								printf("pass : %s\n", write_temp2);
+								write(pipeFd[6], write_temp2, strlen(write_temp2));
+								ptr_temp = NULL;
+								ptr_ip = NULL;
+								ip =0;
+							}
+/*							else if(strcmp(ptr_temp, "q") == 0){
+								while(ptr_temp != NULL){
+									returnbyte3 += sprintf(temp3+returnbyte3, "%s ", ptr_temp);
+									ptr_temp = strtok(NULL, " ");
+								}
+								for(j=0; j<strlen(temp3); j++){
+									temp4[j] = temp3[j+2];
+								}
+								write(pipeFd[6], temp4, strlen(temp4));
+
+
+//								write(pipeFd[6], write_temp, strlen(write_temp));
+							}*/
+					}
+					else printf("read_face error!\n");
+        	   	}
+				else if (events[i].data.fd == pipeFd[2]) {
 /*				if(isCheckNode  == 0){
 					char write_temp[BUFFER_SIZE];
 					sprintf(write_temp, "0.0.0.0:0:0:6E");
@@ -274,13 +358,12 @@ int main(void)
                                 else printf("read error!\n");
 			}
 	                else if (events[i].data.fd == pipeFd[3]) {
-				j=0;				
 				readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 //				printf("read_sense2 : %s\n", buffer);
 				if(readn >0){
 					char write_temp[BUFFER_SIZE];
 					int i=0,ip=0; 
-		                        if(isChanged == 0 ||(buffer[1] == '@')){
+		            if(isChanged == 0 ||(buffer[1] == '@')){
 						isChanged = 1; 
 						if(isTime ==0 ){
 							isTime = 2;
@@ -318,8 +401,8 @@ int main(void)
 						}
 						i=0;
 						memset(tmp, 0x00, BUFFER_SIZE);
-						if(ip == 58){
-							sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, 1);
+						if(ip == 252){
+							sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur/2048, user_info[ip].down_traffic_cur/2048, 1);
 							write(pipeFd[6], write_temp, strlen(write_temp));
 							memset(write_temp, 0x00, BUFFER_SIZE);
 						}
@@ -338,17 +421,18 @@ int main(void)
 								
 								user_info[ip].isStatus=2;
 								user_info[ip].up_count=0;
-								sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, user_info[ip].isStatus);
+								sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur/1024, user_info[ip].down_traffic_cur/1024, user_info[ip].isStatus);
 								write(pipeFd[6], write_temp, strlen(write_temp));
 								memset(write_temp, 0x00, BUFFER_SIZE);
 								user_info[ip].up_traffic_cur = 0;
+								user_info[ip].isStatus=1;
 							}
 							if(isTime == 2){
 								if(user_info[ip].up_traffic_cur/120 > atoi(user_info[ip].up_traffic_limit)){
 									printf("[%d.%d.%d|%d:%d:%d]\t Warnig (210.118.34.%d)\n", t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, ip);
 									user_info[ip].up_count++;
 									user_info[ip].isStatus=2;
-									sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, user_info[ip].isStatus);
+									sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur/1024, user_info[ip].down_traffic_cur/1024, user_info[ip].isStatus);
 									write(pipeFd[6], write_temp, strlen(write_temp));
 									memset(write_temp, 0x00, BUFFER_SIZE);
 									user_info[ip].up_traffic_cur = 0;
@@ -356,7 +440,7 @@ int main(void)
 								else{
 									user_info[ip].isStatus=1;
 								}
-								isTime=-1;
+//								isTime=-1;
 							}
 //							if(isTimeOn >=3 && isTime ==2){
 //								user_info[ip].up_count =0;
@@ -378,17 +462,18 @@ int main(void)
 								write(pipeFd[5], buffer, strlen(buffer));
 								user_info[ip].isStatus = 3;
 								user_info[ip].down_count =0;
-								sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, user_info[ip].isStatus);
+								sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur/1024, user_info[ip].down_traffic_cur/1024, user_info[ip].isStatus);
 								write(pipeFd[6], write_temp, strlen(write_temp));
 								memset(write_temp, 0x00, BUFFER_SIZE);
 								user_info[ip].down_traffic_cur=0;
+								user_info[ip].isStatus=1;
 							} 
 							if(isTime == 2){
 								if(user_info[ip].down_traffic_cur / 120  > atoi(user_info[ip].down_traffic_limit)){
 									printf("[%d.%2d.%2d|%2d:%2d:%2d]\t Warnig (210.118.34.%d)\n", t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, ip);
 									user_info[ip].down_count++;
 									user_info[ip].isStatus=3;
-									sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, user_info[ip].isStatus);
+									sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur/1024, user_info[ip].down_traffic_cur/1024, user_info[ip].isStatus);
 									write(pipeFd[6], write_temp, strlen(write_temp));
 									user_info[ip].down_traffic_cur=0;
 								}
@@ -404,12 +489,9 @@ int main(void)
 						}
 					}
 					isChanged=0;
-					if(user_info[ip].isStatus == 0){
-						user_info[ip].isStatus=1;
-					}
 //					printf("%d:%d:%d:%d\n", ip, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, user_info[ip].isStatus);
 					if(user_info[ip].isStatus != 2 || user_info[ip].isStatus != 3){
-						sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur, user_info[ip].down_traffic_cur, user_info[ip].isStatus);
+						sprintf(write_temp, "%d:%d:%d:%d", ip, user_info[ip].up_traffic_cur/2048, user_info[ip].down_traffic_cur/2048, user_info[ip].isStatus);
 						write(pipeFd[6], write_temp, strlen(write_temp));
 						isCheckNode=0;
 						memset(write_temp, 0x00, BUFFER_SIZE);
@@ -417,7 +499,27 @@ int main(void)
 				}
 		                else printf("read_sense error!\n");//*/
 				
-			}			
+			}
+	       if (events[i].data.fd == pipeFd[7]) {
+			    char temp[BUFFER_SIZE],write_temp[BUFFER_SIZE];
+				char *token_order;
+		   		readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
+				sprintf(temp, "%s\n", buffer);
+                if (readn > 0){
+						int i=0,ip=0,port=0;
+						token_order = strtok(temp, "D#.L");
+						for(i=0; i<4; i++){
+							if(i==3){
+								ip = atoi(token_order);
+							}
+							token_order = strtok(NULL, "D#.L");
+						}
+						port = atoi(token_order);
+						sprintf(write_temp, "%d:%d:0:8", ip,port);
+						write(pipeFd[6], write_temp, strlen(write_temp));
+				}
+				else printf("read_sense3 error\n");
+		   }
 			memset(buffer, 0x00, BUFFER_SIZE);
 		}
 	 }//switch case

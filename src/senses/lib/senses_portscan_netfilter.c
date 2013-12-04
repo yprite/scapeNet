@@ -166,7 +166,7 @@ int scan(int sock, unsigned long ip, int port ) {
 		//fprintf(stdout,"connect completed immediately\n");
 		fprintf(stdout, "%s -> %d\n", (char*)inet_ntoa(sin.sin_addr),
 				ntohs(sin.sin_port) ); 
-		sprintf(result, "echo D#%sL%d > ../bin/read_sense2", (char*)inet_ntoa(sin.sin_addr), ntohs(sin.sin_port) );
+		sprintf(result, "echo D#%sL%d > /tmp/read_sense3", (char*)inet_ntoa(sin.sin_addr), ntohs(sin.sin_port) );
 
 		system(result);
 
