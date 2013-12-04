@@ -13,9 +13,22 @@ DB="mysql"
 
 
 #
+# @brief run root?
+#
+if [ $(id -u) -ne 0]
+then
+	echo "Script must be run as root. Try 'sudo ./run.sh'"
+	exit 1
+fi
+
+
+#
 # @brief 프로그램 초기화면. 계속 진행하거나 종료할 수 있음.
 #
 show_dashboard() {
+
+	../src/bin/mkfifo.sh
+
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 1 / 6 >"\
 		--yes-label "Next"\
