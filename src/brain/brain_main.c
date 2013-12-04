@@ -31,23 +31,23 @@ int main(void)
         perror("epoll_create error");
         exit(1);
     }
-    if ((pipeFd[0] = open("../bin/read_face", O_RDWR)) < 0) {
+    if ((pipeFd[0] = open("/tmp/read_face", O_RDWR)) < 0) {
         perror("fail to call open() : read_face");
         exit(1);
     }
-    if ((pipeFd[1] = open("../bin/write_face", O_RDWR)) < 0) {
+    if ((pipeFd[1] = open("/tmp/write_face", O_RDWR)) < 0) {
         perror("fail to call open() : write_face");
         exit(1);
     }
-    if ((pipeFd[2] = open("../bin/read_sense", O_RDWR)) < 0) {
+    if ((pipeFd[2] = open("/tmp/read_sense", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense");
         exit(1);
     }
-    if ((pipeFd[3] = open("../bin/read_sense2", O_RDWR)) < 0) {
+    if ((pipeFd[3] = open("/tmp/read_sense2", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense2");
         exit(1);
     }
-    if ((pipeFd[4] = open("../bin/write_sense", O_RDWR)) < 0) {
+    if ((pipeFd[4] = open("/tmp/write_sense", O_RDWR)) < 0) {
         perror("fail to call open() : write_sense");
         exit(1);
     }

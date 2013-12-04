@@ -2,10 +2,16 @@ CC = gcc
 CFLAGS = -Wall -D_REENTRANT 
 LDFLAGS = -lm $(shell mysql_config --libs)
 
-all: brain_main_mysql
+all: brain_main_mysql brain_write_php
 
 brain_main_mysql: brain_main_mysql.o brain_mysql.o
 	$(CC) -o $@ $^ $(LDFLAGS)
+
+brain_write_php: brain_write_php.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+brain_write_php.o: brain_write_php.c
+	$(CC) $(CFLAGS) -c $<
 
 brain_main_mysql.o: brain_main_mysql.c  
 	$(CC) $(CFLAGS) -c $<

@@ -37,7 +37,7 @@ int main(void)
     time_t timer;
     struct tm *t;
     
-/*---------------MAKE FIFO -------------------*/
+/*---------------MAKE FIFO -------------------
 	if(-1 == mkfifo("/tmp/read_sense", 0666)){
 		perror("read_sense make");
 	}
@@ -62,6 +62,7 @@ int main(void)
 	if(-1 == mkfifo("/tmp/write_php", 0666)){
 		perror("write_php make");
 	}
+---- run mkfifo.sh  */ 
    
 //    int temp_u=0, temp_d=0; 
 
@@ -122,7 +123,7 @@ int main(void)
     printf("Pipe File Open Start\n");
     printf("\t[+]epoll_create Success\n");
 
-    if ((pipeFd[0] = open("./www/bin/read_face", O_RDWR)) < 0) {
+    if ((pipeFd[0] = open("/tmp/read_face", O_RDWR)) < 0) {
         perror("fail to call open() : read_face");
         exit(1);
     }

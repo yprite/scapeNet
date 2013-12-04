@@ -39,7 +39,7 @@ show_dashboard() {
 		  \___   \/   /    /  /_|  |  |__| /   ___/  /H\   /    \/  /   ___/   /   /    \n\
 		 ____/   /   /___ /  ___   |   ___/   /_______|\__/  /\    /   /______/   /     \n\
 		/_______/ \______/__/   |__|__|  /_______________/__/  \__/__________/___/   TM\n\n\
-	    	 This step is checking the installed package. Select Next key to continue." 15 90
+This script is checking the runned process for scapenet. Select Next key to continue." 15 90
 
 	if [ $? -ne 0 ]; then rm $_temp $_package $_module $_db $_ip $_id $_password; clear; exit 0; fi
 
@@ -59,10 +59,8 @@ show_dashboard() {
 # 5 : Done
 # 6 : Skipped
 # 7 : In Progress
-# 8 : Blank	
-
 check_service() {
-	status=(7 7 7 7 7)
+	status=(7 7 7 7 7 0)
 	progressLevel=0
 	progressValue=0	
 	while true; do
@@ -75,21 +73,20 @@ check_service() {
 			"brain_write" "${status[3]}" \
 			"senses_scan" "${status[4]}" 
 
-		#read input
-		#case $input in
+		if [ ${status[0]} -eq 2 ] && [ ${status[1]} -eq 2 ] && [ ${status[2]} -eq 2 ] && [ ${status[3]} -eq 2 ] && [ ${status[4]} -eq 2 ]; then break; fi
 		case $progressLevel in
 			0) check_process "apache2";;
 			1) check_process "$DB";;
-			2) check_process "brain_main_mysql";;
+			2) check_process "brain_main_mysq";;
 			3) check_process "brain_write_php";;
 			4) check_process "scan";;
-			5) exit 0;;
 		esac
 		let progressLevel++
-		sleep 0.2
-		#read input
-		#if [ $input != 0 ]; then return; fi
+		if [ $progressLevel -eq 5 ]; then let progressLevel=0; fi
+		sleep 0.3
 	done
+
+	echo -n "Press any key to continue..." && read a
 }
 
 
@@ -101,23 +98,29 @@ check_process() {
 	if [ $CNT -ne 0 ]
 	then
 		case "$1" in
-			"apache2" ) status[0]=2
+			"apache2" ) if [ ${status[0]} -eq 2 ]; then return; fi 
+				status[0]=2
 				let progressValue+=20;;
-			"$DB" ) status[1]=2
+			"$DB" ) if [ ${status[1]} -eq 2 ]; then return; fi
+				status[1]=2
 				let progressValue+=20;;
-			"brain_main_mysql" ) status[2]=2
+			"brain_main_mysq" ) if [ ${status[2]} -eq 2 ]; then return; fi
+				status[2]=2
 				let progressValue+=20;;
-			"brain_write_php" ) status[3]=2
+			"brain_write_php" ) if [ ${status[3]} -eq 2 ]; then return; fi
+				status[3]=2
 				let progressValue+=20;;
-			"scan" ) status[4]=2
+			"scan" ) if [ ${status[4]} -eq 2 ]; then return; fi
+				status[4]=2
 				let progressValue+=20;;
 		esac
 	else
 		case "$1" in
 			"apache2" ) status[0]=4;;
 			"$DB" ) status[1]=4;;
-			"brain_main_mysql" ) status[2]=4
-				../src/brain/brain_main_mysql &
+			"brain_main_mysq" ) status[2]=4
+				sleep 0.5
+				(../src/brain/brain_main_mysql > /dev/null &)
 				{ for I in $(seq 1 100) ; do
 					echo $I
 					sleep 0.1
@@ -125,9 +128,9 @@ check_process() {
 				echo 100; } | dialog --gauge "Please wait for running process..." 6 60 0
 				;;
 			"brain_write_php" ) status[3]=4
-				../src/brain/brain_write_php &;;
+				(../src/brain/brain_write_php > /dev/null &);;
 			"scan" ) status[4]=4
-				../src/senses/scan &;;
+				(../src/senses/scan /dev/null &);;
 		esac
 	fi
 }
