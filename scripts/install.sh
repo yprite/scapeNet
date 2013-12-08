@@ -209,7 +209,7 @@ create_binary() {
 		cd ../src/senses; make -f Makefile_libpcap; cd -
 	fi
 
-	cd ../src/brain; make -f Makefile_mysql; cd -
+	cd ../src/brain; make -f Makefile_mysql2; cd -
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 4 / 5 >"\
@@ -234,6 +234,8 @@ create_table() {
 	done
 	echo 100; } | dialog --gauge "Please wait for create database table..." 6 60 0
 
+	./bridge_setting.sh
+	./qos_setting.sh
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 5 / 5 >"\
