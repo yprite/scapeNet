@@ -96,7 +96,7 @@ check_service() {
 		if [ $progressLevel -eq 9 ]; then let progressLevel=0; fi
 		sleep 0.3
 	done
-
+	echo ""
 	echo -n "Press any key to continue..." && read a
 }
 
@@ -110,97 +110,97 @@ check_process() {
 	then
 		case "$1" in
 			"apache2" ) if [ ${status[0]} -eq 2 ]; then return; fi 
-				status[0]=2
+				let status[0]=2
 				let progressValue+=10;;
 			"$DB" ) if [ ${status[1]} -eq 2 ]; then return; fi
-				status[1]=2
+				let status[1]=2
 				let progressValue+=10;;
 			"brain_main_mysql" ) if [ ${status[2]} -eq 2 ]; then return; fi
-				status[2]=2
+				let status[2]=2
 				let progressValue+=10;;
 			"brain_arp_mysql" ) if [ ${status[3]} -eq 2 ]; then return; fi
-				status[3]=2
+				let status[3]=2
 				let progressValue+=10;;
 			"brain_traffic_mysql" ) if [ ${status[4]} -eq 2 ]; then return; fi
-				status[3]=2
+				let status[4]=2
 				let progressValue+=10;;
 			"brain_kill_mysql" ) if [ ${status[5]} -eq 2 ]; then return; fi
-				status[3]=2
+				let status[5]=2
 				let progressValue+=10;;
 			"brain_qos_mysql" ) if [ ${status[6]} -eq 2 ]; then return; fi
-				status[3]=2
+				let status[6]=2
 				let progressValue+=10;;
 			"brain_port_mysql" ) if [ ${status[7]} -eq 2 ]; then return; fi
-				status[3]=2
+				let status[7]=2
 				let progressValue+=10;;
 			"scan" ) if [ ${status[8]} -eq 2 ]; then return; fi
-				status[4]=2
-				let progressValue+=10;;
+				let status[8]=2
+				let progressValue+=20;;
 		esac
 	else
 		case "$1" in
-			"apache2" ) status[0]=4;;
-			"$DB" ) status[1]=4;;
-			"brain_main_mysql" ) status[2]=4
+			"apache2" ) let status[0]=4;;
+			"$DB" ) let status[1]=4;;
+			"brain_main_mysql" ) let status[2]=4
 				sleep 0.5
 				(../src/brain/brain_main_mysql > /dev/null &)
-				{ for I in $(seq 1 100) ; do
+				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
-					#sleep 0.01
+					sleep 0.01
 				done
 				echo 100; } | dialog --gauge "Please wait for running brain_main_mysql process..." 6 60 0
 				;;
-			"brain_arp_mysql" ) status[3]=4
+			"brain_arp_mysql" ) let status[3]=4
 				sleep 0.5
 				(../src/brain/brain_arp_mysql > /dev/null &)
-				{ for I in $(seq 1 100) ; do
+				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
-					#sleep 0.01
+					sleep 0.01
 				done
 				echo 100; } | dialog --gauge "Please wait for running brain_arp_mysql process..." 6 60 0
 				;;
-			"brain_traffic_mysql" ) status[4]=4
+			"brain_traffic_mysql" ) let status[4]=4
 				sleep 0.5
 				(../src/brain/brain_traffic_mysql > /dev/null &)
-				{ for I in $(seq 1 100) ; do
+				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
-					#sleep 0.01
+					sleep 0.01
 				done
 				echo 100; } | dialog --gauge "Please wait for running brain_traffic_mysql process..." 6 60 0
 				;;
-			"brain_kill_mysql" ) status[5]=4
+			"brain_kill_mysql" ) let status[5]=4
 				sleep 0.5
 				(../src/brain/brain_kill_mysql > /dev/null &)
-				{ for I in $(seq 1 100) ; do
+				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
-					#sleep 0.01
+					sleep 0.01
 				done
 				echo 100; } | dialog --gauge "Please wait for running brain_kill_mysql process..." 6 60 0
 				;;
-			"brain_qos_mysql" ) status[6]=4
+			"brain_qos_mysql" ) let status[6]=4
 				sleep 0.5
 				(../src/brain/brain_qos_mysql > /dev/null &)
-				{ for I in $(seq 1 100) ; do
+				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
-					#sleep 0.01
+					sleep 0.01
 				done
 				echo 100; } | dialog --gauge "Please wait for running brain_qos_mysql process..." 6 60 0
 				;;
-			"brain_port_mysql" ) status[7]=4
+			"brain_port_mysql" ) let status[7]=4
 				sleep 0.5
 				(../src/brain/brain_port_mysql > /dev/null &)
-				{ for I in $(seq 1 100) ; do
+				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
-					#sleep 0.01
+					sleep 0.01
 				done
 				echo 100; } | dialog --gauge "Please wait for running brain_port_mysql process..." 6 60 0
 				;;
-			"scan" ) status[8]=4
+			"scan" ) let status[8]=4
 				sleep 0.5
-				(../src/senses/scan /dev/null &)
-				{ for I in $(seq 1 100) ; do
+				(../src/brain/scan > /dev/null &)
+				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
-					#sleep 0.01
+					sleep 0.01
 				done
 				echo 100; } | dialog --gauge "Please wait for running senses_scan process..." 6 60 0
 				;;
