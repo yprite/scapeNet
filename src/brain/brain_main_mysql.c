@@ -58,7 +58,6 @@ int main(void){
 					if(events[i].data.fd == pipeFd[0]){
 						readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 						if(readn >0){
-						printf("Read_face : %s\n", buffer);
 							write(pipeFd[8], buffer, strlen(buffer));
 							if(buffer[0] !='s'){
 								write(pipeFd[7], buffer, strlen(buffer));
@@ -91,6 +90,7 @@ int main(void){
 						readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 						if(readn >0){
 							write(pipeFd[6], buffer, strlen(buffer));
+
 						}
 						else{
 							printf("read_sense3 error\n");
