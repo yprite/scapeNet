@@ -9,6 +9,8 @@ WRITE_TRAFFIC=/tmp/write_traffic
 WRITE_KILL=/tmp/write_kill
 WRITE_PORT=/tmp/write_port
 WRITE_SENSE=/tmp/write_sense
+READ_FACE=/home/scapeNet/www/bin/read_face
+READ_FACE2=/home/scapeNet/www/bin/read_face2
 
 if [ ! -e $READ_FACE ]; then mkfifo --mode 0666 $READ_FACE; fi
 if [ ! -e $READ_SENSE ]; then mkfifo --mode 0666 $READ_SENSE; fi
@@ -19,4 +21,7 @@ if [ ! -e $WRITE_TRAFFIC ]; then mkfifo --mode 0666 $WRITE_TRAFFIC; fi
 if [ ! -e $WRITE_KILL ]; then mkfifo --mode 0666 $WRITE_KILL; fi
 if [ ! -e $WRITE_PORT ]; then mkfifo --mode 0666 $WRITE_PORT; fi
 if [ ! -e $WRITE_SENSE ]; then mkfifo --mode 0666 $WRITE_SENSE; fi
+if [ ! -e $READ_FACE]; then mkfifo --mode 0666 $READ_FACE; fi
+if [ ! -e $READ_FACE2]; then mkfifo --mode 0666 $READ_FACE2; fi
+
 
