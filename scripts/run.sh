@@ -27,7 +27,7 @@ fi
 #
 show_dashboard() {
 
-	../src/bin/mkfifo.sh
+	sudo ../src/bin/mkfifo.sh
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 1 / 6 >"\
@@ -142,7 +142,7 @@ check_process() {
 			"apache2" ) let status[0]=4;;
 			"$DB" ) let status[1]=4;;
 			"brain_main_mysql" ) let status[2]=4
-				sleep 0.5
+				sleep 0.2
 				(../src/brain/brain_main_mysql > /dev/null &)
 				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
@@ -151,7 +151,7 @@ check_process() {
 				echo 100; } | dialog --gauge "Please wait for running brain_main_mysql process..." 6 60 0
 				;;
 			"brain_arp_mysql" ) let status[3]=4
-				sleep 0.5
+				sleep 0.2
 				(../src/brain/brain_arp_mysql > /dev/null &)
 				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
@@ -160,7 +160,7 @@ check_process() {
 				echo 100; } | dialog --gauge "Please wait for running brain_arp_mysql process..." 6 60 0
 				;;
 			"brain_traffic_mysql" ) let status[4]=4
-				sleep 0.5
+				sleep 0.2
 				(../src/brain/brain_traffic_mysql > /dev/null &)
 				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
@@ -169,7 +169,7 @@ check_process() {
 				echo 100; } | dialog --gauge "Please wait for running brain_traffic_mysql process..." 6 60 0
 				;;
 			"brain_kill_mysql" ) let status[5]=4
-				sleep 0.5
+				sleep 0.2
 				(../src/brain/brain_kill_mysql > /dev/null &)
 				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
@@ -178,7 +178,7 @@ check_process() {
 				echo 100; } | dialog --gauge "Please wait for running brain_kill_mysql process..." 6 60 0
 				;;
 			"brain_qos_mysql" ) let status[6]=4
-				sleep 0.5
+				sleep 0.2
 				(../src/brain/brain_qos_mysql > /dev/null &)
 				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
@@ -187,7 +187,7 @@ check_process() {
 				echo 100; } | dialog --gauge "Please wait for running brain_qos_mysql process..." 6 60 0
 				;;
 			"brain_port_mysql" ) let status[7]=4
-				sleep 0.5
+				sleep 0.2
 				(../src/brain/brain_port_mysql > /dev/null &)
 				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
@@ -196,7 +196,7 @@ check_process() {
 				echo 100; } | dialog --gauge "Please wait for running brain_port_mysql process..." 6 60 0
 				;;
 			"scan" ) let status[8]=4
-				sleep 0.5
+				sleep 0.2
 				(../src/brain/scan > /dev/null &)
 				{ for I in 10 20 30 40 50 60 70 80 90 100 ; do
 					echo $I
