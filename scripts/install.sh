@@ -209,7 +209,7 @@ create_binary() {
 		cd ../src/senses; make -f Makefile_libpcap; cd -
 	fi
 
-	cd ../src/brain; make -f Makefile_mysql; cd -
+	cd ../src/brain; make -f Makefile_mysql2; cd -
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 4 / 5 >"\
