@@ -234,6 +234,8 @@ create_table() {
 	done
 	echo 100; } | dialog --gauge "Please wait for create database table..." 6 60 0
 
+	./bridge_setting.sh
+	./qos_setting.sh
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 5 / 5 >"\
