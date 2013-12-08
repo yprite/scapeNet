@@ -15,7 +15,7 @@ int main(){
 	int pipeFd=0;
 	char buffer[BUFFER_SIZE];
 
-	if((pipeFd = open("/home/scapenet/www/bin/read_face2", O_RDWR))<0){
+	if((pipeFd = open("/home/scapeNet/www/bin/read_face2", O_RDWR))<0){
 		perror("fail to call");	
 		exit(1);
 	}
