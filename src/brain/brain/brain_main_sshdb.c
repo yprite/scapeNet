@@ -31,26 +31,39 @@ int main(void)
         perror("epoll_create error");
         exit(1);
     }
+    printf("1\n");
     if ((pipeFd[0] = open("../bin/read_face", O_RDWR)) < 0) {
         perror("fail to call open() : read_face");
         exit(1);
     }
+
+    printf("2\n");
     if ((pipeFd[1] = open("../bin/write_face", O_RDWR)) < 0) {
         perror("fail to call open() : write_face");
         exit(1);
     }
+
+    printf("3\n");
     if ((pipeFd[2] = open("../bin/read_sense", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense");
         exit(1);
     }
+
+    printf("4\n");
     if ((pipeFd[3] = open("../bin/read_sense2", O_RDWR)) < 0) {
         perror("fail to call open() : read_sense2");
         exit(1);
     }
+
+    printf("5\n");
     if ((pipeFd[4] = open("../bin/write_sense", O_RDWR)) < 0) {
         perror("fail to call open() : write_sense");
         exit(1);
     }
+
+
+
+
 
     // 만들어진 듣기 소켓을 epoll이벤트 풀에 추가한다.
     // EPOLLIN(read) 이벤트의 발생을 탐지한다.

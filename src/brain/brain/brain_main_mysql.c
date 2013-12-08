@@ -58,7 +58,6 @@ int main(void){
 					if(events[i].data.fd == pipeFd[0]){
 						readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 						if(readn >0){
-						printf("Read_face : %s\n", buffer);
 							write(pipeFd[8], buffer, strlen(buffer));
 							if(buffer[0] !='s'){
 								write(pipeFd[7], buffer, strlen(buffer));
@@ -104,7 +103,7 @@ int main(void){
 	return 0;
 }
 void pipe_open(){
-	if((pipeFd[0] = open("/home/scapenet/www/bin/read_face", O_RDWR))<0){
+	if((pipeFd[0] = open("../../www/bin/read_face", O_RDWR))<0){
 		perror("fail to call open() : read_face");
 		exit(1);
 	}

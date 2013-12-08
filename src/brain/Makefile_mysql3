@@ -1,0 +1,11 @@
+CC = gcc
+CFLAGS = -Wall -D_REENTRANT 
+LDFLAGS = -lm $(shell mysql_config --libs)
+
+SRCS = $(wildcard *.c)
+EXEC = $(patsubst %.c, %, $(SRCS))
+
+all: $(EXES)
+
+clean:
+	rm -f $(EXES)

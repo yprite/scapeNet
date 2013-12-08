@@ -1,16 +1,21 @@
-#include "include/brain_system.h"
+#include "include/brain_mysql.h"
 
+void init_db();
+void load_db();
 void pipe_open();
 
 
-int pipeFd[9];
+//MYSQL *connection = NULL, conn;
+//MYSQL_RES *sql_result;
+//MYSQL_ROW sql_row;
+//int query_stat =0;
+int pipeFd[8];
 
 int main(void){
 
 	struct epoll_event ev, *events;
-	int epollFd, logFd,readn;
+	int epollFd, logFd;
 	char buffer[BUFFER_SIZE];
-
 //	Description	pipeFd
 //	pipeFd[0] :	read_face		->	WEB
 //	pipeFd[1] :	read_sense		->	ARP
@@ -18,9 +23,8 @@ int main(void){
 //	pipeFd[3] :	read_sense3		-> 	PORT
 //	pipeFd[4] :	write_arp		->	DB ARP
 //	pipeFd[5] :	write_traffic	->	DB traffic
-//	pipeFd[6] :	write_port		->	DB port
-//	pipeFd[7] :	write_kill		->	DB Kill
-//	pipeFd[8] :	write_sense		->	COMMAND 
+//	pipeFd[6] :	write_qos		->	DB QoS
+//	pipeFd[7] :	write_port		->	DB port
 	
 	memset(buffer, 0x00, BUFFER_SIZE);
 	events = (struct epoll_event *)malloc(sizeof(*events) *EPOLL_SIZE);
@@ -42,7 +46,7 @@ int main(void){
 	while(1){
 		int state,i;
 
-		state = epoll_wait(epollFd, events, EPOLL_SIZE, 1000);
+		state = epoll_wait(epollFd, eventsm EPOLL_SIZE, 1000);
 		switch(state){
 
 			case -1:
@@ -50,7 +54,7 @@ int main(void){
 				break;
 
 			case 0:
-				printf("No Evenet\n");
+				printf("No Evenet\r");
 				break;
 
 			default:
@@ -58,11 +62,7 @@ int main(void){
 					if(events[i].data.fd == pipeFd[0]){
 						readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 						if(readn >0){
-						printf("Read_face : %s\n", buffer);
-							write(pipeFd[8], buffer, strlen(buffer));
-							if(buffer[0] !='s'){
-								write(pipeFd[7], buffer, strlen(buffer));
-							}
+							printf("read_face buffer : %s\n", buffer);		
 						}
 						else{
 							printf("read_face error\n");
@@ -71,7 +71,7 @@ int main(void){
 					else if(events[i].data.fd == pipeFd[1]){
 						readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 						if(readn >0){
-							write(pipeFd[4], buffer, strlen(buffer));
+							printf("read_sense buffer : %s\n", buffer);		
 						}
 						else{
 							printf("read_sense error\n");
@@ -80,7 +80,7 @@ int main(void){
 					else if(events[i].data.fd == pipeFd[2]){
 						readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 						if(readn >0){
-							write(pipeFd[5], buffer, strlen(buffer));
+							printf("read_sense2 buffer : %s\n", buffer);		
 						}
 						else{
 							printf("read_sense2 error\n");
@@ -90,21 +90,22 @@ int main(void){
 					else if(events[i].data.fd == pipeFd[3]){
 						readn = read(events[i].data.fd, buffer, BUFFER_SIZE);
 						if(readn >0){
-							write(pipeFd[6], buffer, strlen(buffer));
+							printf("read_sense3 buffer : %s\n", buffer);		
 						}
 						else{
 							printf("read_sense3 error\n");
 						}
-					}		
-					readn=0;
-					memset(buffer, 0x00, BUFFER_SIZE);	
+					}				
+					
+					
+					
 				}
 		}
 	}
 	return 0;
 }
 void pipe_open(){
-	if((pipeFd[0] = open("/home/scapenet/www/bin/read_face", O_RDWR))<0){
+	if((pipeFd[0] = open("../../www/bin/read_face", O_RDWR))<0){
 		perror("fail to call open() : read_face");
 		exit(1);
 	}
@@ -124,20 +125,40 @@ void pipe_open(){
 		perror("fail to call open() : write_arp");
 		exit(1);
 	}
-	if((pipeFd[5] = open("/tmp/write_traffic", O_RDWR))<0){
+	if((pipeFd[5] = open("/tmp/write_tarffic", O_RDWR))<0){
 		perror("fail to call open() : write_traffic");
 		exit(1);
 	}
-	if((pipeFd[6] = open("/tmp/write_port", O_RDWR))<0){
+	if((pipeFd[6] = open("/tmp/write_qos", O_RDWR))<0){
+		perror("fail to call open() : write_qos");
+		exit(1);
+	}
+	if((pipeFd[7] = open("/tmp/write_port", O_RDWR))<0){
 		perror("fail to call open() : write_port");
 		exit(1);
 	}
-	if((pipeFd[7] = open("/tmp/write_kill", O_RDWR))<0){
-		perror("fail to call open() : write_man");
-		exit(1);
+}
+void init_db(){
+	int i=0;
+	char temp[BUFFER_SIZE];
+	mysql_init(&conn);
+	connection = mysql_real_connect(&conn, DB_HOST, DB_USER, DB_PASS, DB_NAME, 3306, (char*)NULL, 0);
+	for(i=1; i<255; i++){
+		 sprintf(temp, "update ip_data set isStatus = 0 ,up_traffic_cur =0, down_traffic_cur =0 where pid = %d", ip);
+		 query_stat = mysql_query(connection, temp);
 	}
-	if((pipeFd[8] = open("/tmp/write_sense", O_RDWR))<0){
-		perror("fail to call open() : write_sense");
-		exit(1);
+}
+void load_db(){
+	char temp[20];
+	int ip=0;
+	query_stat = mysql_query(connection, "select * from ip_data");	
+	sql_result = mysql_store_result(connection);
+	while((sql_row = mysql_fetch_row(sql_result))!= NULL){
+			ip=atoi(sql_row[0]);
+			sprintf(user_info[ip].source_ip, "%s\n", sql_row[1]);
+			sprintf(user_info[ip].mac, "%s\n", sql_row[2]);
+			sprintf(user_info[ip].up_traffic_limit, "%s\n", sql_row[5]);
+			sprintf(user_info[ip].down_traffic_limit, "%s\n", sql_row[6]);
 	}
+	printf("DB Load Ok\r");
 }

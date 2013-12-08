@@ -1,0 +1,11 @@
+./brain_main_mysql &
+sleep 1
+./brain_arp_mysql &
+sleep 1
+./brain_traffic_mysql &
+sleep 1
+./brain_kill_mysql &
+sleep 1
+./brain_port_mysql &
+sleep 1
+./brain_qos_mysql &

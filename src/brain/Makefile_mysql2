@@ -1,0 +1,36 @@
+CC = gcc
+CFLAGS = -Wall -D_REENTRANT 
+LDFLAGS = -lm $(shell mysql_config --libs)
+
+all: brain_main_mysql brain_traffic_mysql brain_kill_mysql brain_arp_mysql brain_port_mysql brain_qos_mysql
+
+brain_main_mysql: brain_main_mysql.o 
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+brain_traffic_mysql: brain_traffic_mysql.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+brain_arp_mysql: brain_arp_mysql.o  
+	$(CC) -o $@ $^ $(LDFLAGS)
+brain_kill_mysql: brain_kill_mysql.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+brain_port_mysql: brain_port_mysql.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+brain_qos_mysql: brain_qos_mysql.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+brain_main_mysql.o: brain_main_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+
+brain_traffic_mysql.o: brain_traffic_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+brain_arp_mysql.o: brain_arp_mysql.c 
+	$(CC) $(CFLAGS) -c $<
+brain_kill_mysql.o: brain_kill_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+brain_port_mysql.o: brain_port_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+brain_qos_mysql.o: brain_qos_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+brain_main_mysql.o: brain_main_mysql.c  
+	$(CC) $(CFLAGS) -c $<
+clean:
+	rm -f *.o brain_main_mysql brain_traffic_mysql brain_kill_mysql brain_arp_mysql brain_port_mysql brain_qos_mysql
