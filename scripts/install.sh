@@ -182,7 +182,7 @@ check_package() {
 #
 install_package() {
 	for package in `cat $_package`; do
-		apt-get install $package -y
+		sudo apt-get install $package -y
 	done < $_package
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
@@ -204,12 +204,12 @@ create_binary() {
 	
 	if [ $_module = "NetFilter" ]
 	then
-		cd ../src/senses; make -f Makefile_netfilter; cd -
+		cd ../src/senses; sudo make -f Makefile_netfilter; cd -
 	else
-		cd ../src/senses; make -f Makefile_libpcap; cd -
+		cd ../src/senses; sudo make -f Makefile_libpcap; cd -
 	fi
 
-	cd ../src/brain; make -f Makefile_mysql2; cd -
+	cd ../src/brain; sudo make -f Makefile_mysql2 clean; sudo make -f Makefile_mysql2; cd -
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 4 / 5 >"\
@@ -234,6 +234,7 @@ create_table() {
 	done
 	echo 100; } | dialog --gauge "Please wait for create database table..." 6 60 0
 
+	# qos 설정
 	./bridge_setting.sh
 	./qos_setting.sh
 
