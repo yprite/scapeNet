@@ -30,7 +30,7 @@ show_dashboard() {
 	sudo ../src/bin/mkfifo.sh
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-		--title "< 1 / 6 >"\
+		--title ""\
 		--yes-label "Next"\
 		--no-label "Quit"\
 		--yesno "\n\n\
@@ -65,7 +65,7 @@ check_service() {
 	progressValue=0	
 	while true; do
 		dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
-			--title "< 6 / 6 >" \
+			--title "" \
 			--mixedgauge "" 0 0 $progressValue \
 			"Apache" "${status[0]}" \
 			"$DB" "${status[1]}" \
