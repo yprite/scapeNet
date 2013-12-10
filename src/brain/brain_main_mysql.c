@@ -1,10 +1,21 @@
+/**
+ * Brain Main Mysql
+ * @author KimYongHun
+ */
 #include "include/brain_system.h"
-
+/**
+ * Brain 파이프 만드는 함수 
+ * 
+ * 
+ */
 void pipe_open();
 
 
 int pipeFd[9];
-
+/**
+ * Brain 파이프 관리 함수 
+ * 
+ */
 int main(void){
 
 	struct epoll_event ev, *events;
