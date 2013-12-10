@@ -207,7 +207,7 @@ create_binary() {
 	then
 		cd ../src/senses; sudo make -f Makefile_netfilter clean; sudo make -f Makefile_netfilter; cd -
 	else
-		cd ../src/senses; sudo make -f Makefile_libpcap clean; sudo make -f Makefile_libpcap; cd -
+		cd ../src/brain; sudo make -f Makefile_libpcap clean; sudo make -f Makefile_libpcap; cd -
 	fi
 
 	cd ../src/brain; sudo make -f Makefile_mysql2 clean; sudo make -f Makefile_mysql2; cd -
