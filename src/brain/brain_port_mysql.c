@@ -1,5 +1,11 @@
+/**
+ * Brain Port Mysql
+ * @author Kim Yonghun
+ */
 #include "include/brain_mysql.h" 
-
+/**
+ * Brain 포트 관리 함수 
+ */
 
 
 int main(){
