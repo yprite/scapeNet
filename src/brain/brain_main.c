@@ -1,3 +1,27 @@
+/**
+ * @mainpage Project 제목
+ *
+ * @section overview Overview
+ *
+ * Section에 대한 설명을 여기에 적습니다.
+ *
+ * @section list List
+ *
+ * 다음과 같이 순서가 없는 List를 작성할 수 있습니다.
+ *
+ * - List 1
+ * - List 2
+ * 
+ * 다음과 같이 순서가 있는 List를 작성할 수 있습니다.
+ *
+ * -# List 1
+ * -# List 2
+ * 
+ * http://ioriy2k.pe.kr/archives/3259 참조
+ * 
+ */
+
+
  #include "include/brain_main.h"
 //u_info user_info[255];
 
