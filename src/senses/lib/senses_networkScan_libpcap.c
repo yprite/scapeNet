@@ -1,7 +1,14 @@
+/**
+ * Senses Network Scan Libpcap
+ * @author Kwon HoeGeun
+ */
 #include "../include/senses_networkScan_libpcap.h"
 
 int traffic_flag = 0;
 
+/**
+ * 스레드로 실행되며 ARP Packet send를 하며 하위 쓰레드로는 kill Packet send와 Receiver Packet이 있다.
+ */
 void *networkScan(void *arg)
 {
 	bpf_u_int32 netaddr=0, mask=0;    /* To Store network address and netmask   */ 
@@ -128,6 +135,9 @@ void *networkScan(void *arg)
 	return 0;
 }
 
+/**
+ * 노드의 생존 유무를 알기 위한 ARP Packet 전송함수, networkscan에서 30초 주기로 호출된다.
+ */
 void send_arp_packet(pcap_t *descr, device_info dev_info)
 {
 	int dest_ip;
@@ -141,6 +151,9 @@ void send_arp_packet(pcap_t *descr, device_info dev_info)
 	}
 }
 
+/**
+ * 노드의 생존유무를 알 수 있는 ARP Packet을 만들어주는 함수.
+ */
 unsigned char* make_arp_packet(device_info dev_info, u_char dest_last_addr)
 {
 	static unsigned char pack_data[42];
@@ -173,6 +186,9 @@ unsigned char* make_arp_packet(device_info dev_info, u_char dest_last_addr)
 	return pack_data;
 }
 
+/**
+ * 이프로그램이 실행되는 디비이스의 정보를 저장하는 함수.
+ */
 int get_device_info(device_info *p_dev_info)
 {
     // 이더넷 데이터 구조체 
@@ -214,8 +230,7 @@ int get_device_info(device_info *p_dev_info)
         break;
     }
 
-    // 주소를 비교해 보자.. ifcfg.ifc_req는 ifcfg.ifc_buf를 가리키고 있음을 
-    // 알 수 있다. 
+    // 주소를 비교해 보자.. ifcfg.ifc_req는 ifcfg.ifc_buf를 가리키고 있음을 알 수 있다. 
     // printf("address %p\n", &ifcfg.ifc_req);
     // printf("address %p\n", &ifcfg.ifc_buf);
 
@@ -253,6 +268,9 @@ int get_device_info(device_info *p_dev_info)
     return 1;
 }
 
+/**
+ * 쓰레드 함수이며 노드별 트레픽과 생존유무를 판단하여 Fifo 파일에 삽입하는 함수.
+ */
 void *receiver(void *arg)
 {
 	int pipeFd = 0;
@@ -295,6 +313,9 @@ void *receiver(void *arg)
 	return 0;
 }
 
+/**
+ * receiver 쓰레드 함수에서 호출되며 ARP Packet을 확인 하는 함수.
+ */
 int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, NodeStatus *p_node_status, int pipeFd)
 {
 	etherhdr_t *ether = (etherhdr_t*)(packet);
@@ -335,6 +356,9 @@ int check_reply_packet(const unsigned char *packet, struct pcap_pkthdr *pkthdr, 
 
 }
 
+/**
+ * receiver 쓰레드 함수에서 호출되며 TCP/IP Packet을 확인 하는 함수.
+ */
 void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr, unsigned char *source_ip, int pipeFd)
 {
 	int writen;
@@ -384,7 +408,9 @@ void confirmNodeTraffic(const unsigned char *packet, struct pcap_pkthdr *pkthdr,
 
 }
 
-/*test function*/
+/**
+ * packet을 Test 하는 함수.
+ */
 void print_packet(const unsigned char *packet)
 {
 	etherhdr_t *ether = (etherhdr_t*)(packet);
@@ -437,5 +463,4 @@ void print_packet(const unsigned char *packet)
 
 		printf("\n"); 
 	} 
-
 }

@@ -1,7 +1,14 @@
+/**
+ * Senses Network Scan
+ * @author Kwon HoeGeun
+ */
 #include "../include/senses_networkScan_netfilter.h"
 
 int traffic_flag = 0;
 
+/**
+ * 스레드로 실행되며 ARP Packet send를 하며 하위 쓰레드로는 kill Packet send와 Receiver Packet이 있다.
+ */
 void *networkScan(void *arg)
 {
 	bpf_u_int32 netaddr=0, mask=0;    /* To Store network address and netmask   */ 
@@ -131,6 +138,9 @@ void *networkScan(void *arg)
 	return 0;
 }
 
+/**
+ * 노드의 생존 유무를 알기 위한 ARP Packet 전송함수, networkscan에서 30초 주기로 호출된다.
+ */
 void send_arp_packet(pcap_t *descr, device_info dev_info)
 {
 	int dest_ip;
@@ -144,6 +154,9 @@ void send_arp_packet(pcap_t *descr, device_info dev_info)
 	}
 }
 
+/**
+ * 노드의 생존유무를 알 수 있는 ARP Packet을 만들어주는 함수.
+ */
 unsigned char* make_arp_packet(device_info dev_info, u_char dest_last_addr)
 {
 	static unsigned char pack_data[42];
@@ -176,6 +189,9 @@ unsigned char* make_arp_packet(device_info dev_info, u_char dest_last_addr)
 	return pack_data;
 }
 
+/**
+ * 이프로그램이 실행되는 디비이스의 정보를 저장하는 함수.
+ */
 int get_device_info(device_info *p_dev_info)
 {
     // 이더넷 데이터 구조체 
@@ -256,7 +272,9 @@ int get_device_info(device_info *p_dev_info)
     return 1;
 }
 
-/*test function*/
+/**
+ * packet을 Test 하는 함수.
+ */
 void print_packet(const unsigned char *packet)
 {
 	etherhdr_t *ether = (etherhdr_t*)(packet);

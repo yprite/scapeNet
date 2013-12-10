@@ -1,3 +1,7 @@
+/**
+ * Senses Kernel Queue
+ * @author Kwon HoeGeun
+ */
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/kfifo.h>
@@ -35,6 +39,9 @@ int get_kfifo(char *msg);
 static int thread_loop1(void *data);
 static int thread_loop(void *data);
 
+/**
+ * Kernel Queue를 2개를 생성하여 2개를 각각의 쓰레드로 실행시키는 함수.
+ */
 int __init init_fifo_test(void)
 {
 	unsigned int i;
@@ -87,6 +94,9 @@ int __init init_fifo_test(void)
 
 }
 
+/**
+ * ARP Packet을 KFIFO에 저장된 데이터를 read_sense라는 fifo파일에 삽입하는 쓰레드 함수.
+ */
 static int thread_loop1(void *data)
 {
 	int i;
@@ -111,6 +121,9 @@ static int thread_loop1(void *data)
 	return 0;
 }
 
+/**
+ * TCP/IP Packet을 KFIFO에 저장된 데이터를 read_sense2라는 fifo파일에 삽입하는 쓰레드 함수.
+ */
 static int thread_loop(void *data)
 {
 	int i;
@@ -141,8 +154,9 @@ static int thread_loop(void *data)
 	return 0;
 }
 
-
-
+/**
+ * KFIFO에 ARP데이터를 삽입하는 함수.(심볼로 선언해서 다른 Kernel Module에서 호출하여 사용함)
+ */
 int set_kfifo1(char *msg)
 {
 	//printk("get msg1 = %s\n", msg);
@@ -154,6 +168,9 @@ int set_kfifo1(char *msg)
 	return 1;
 }
 
+/**
+ * KFIFO에 TCP/IP데이터를 삽입하는 함수.(심볼로 선언해서 다른 Kernel Module에서 호출하여 사용함)
+ */
 int set_kfifo(char *msg)
 {
 	//printk("get msg = %s\n", msg);
@@ -165,6 +182,9 @@ int set_kfifo(char *msg)
 	return 1;
 }
 
+/**
+ * KFIFO에서 ARP데이터를 반환하는 함수.(심볼로 선언해서 다른 Kernel Module에서 호출하여 사용함)
+ */
 int get_kfifo1(char *msg)
 {
 	if(kfifo_len(&fifo1) <= 0) {
@@ -176,6 +196,9 @@ int get_kfifo1(char *msg)
 	return 1;
 }
 
+/**
+ * KFIFO에서 TCP/IP데이터를 반환하는 함수.(심볼로 선언해서 다른 Kernel Module에서 호출하여 사용함)
+ */
 int get_kfifo(char *msg)
 {
 	if(kfifo_len(&fifo) <= 0) {
@@ -187,6 +210,9 @@ int get_kfifo(char *msg)
 	return 1;
 }
 
+/**
+ * 모듈을 종료할때 호출되며 생성된 KFIFO와 open된 fifo 파일들을 닫아준다.
+ */
 void __exit exit_fifo_test(void)
 {
 	filp_close(filp1, NULL);  /* filp_close(filp, current->files) ?  */
@@ -207,6 +233,9 @@ void __exit exit_fifo_test(void)
 	printk("fifos module removed\n");
 }
 
+/**
+ * KFIFO에서 받아온 ARP데이터를 fifo파일에 삽입하는 함수.
+ */
 static void send_myfifo1(char *filename, char *msg)
 {
 	char bufs[100];
@@ -223,6 +252,9 @@ static void send_myfifo1(char *filename, char *msg)
 	set_fs(old_fs);
 }
 
+/**
+ * KFIFO에서 받아온 TCP/IP데이터를 fifo파일에 삽입하는 함수.
+ */
 static void send_myfifo(char *filename, char *msg)
 {
 	char bufs[100];

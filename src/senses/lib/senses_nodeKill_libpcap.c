@@ -1,5 +1,12 @@
+/**
+ * Senses 선택되는 노드를 IP충돌을 이르키는 모듈.
+ * @author Kwon HoeGeun
+ */
 #include "../include/senses_nodeKill_libpcap.h"
 
+/**
+ * 쓰레드 함수이며 3초를 주기로 스푸핑된 Packet을 라우터에게 전송하는 함수.
+ */
 void *send_kill_packet(void *arg)
 {
 	int dest_ip;
@@ -19,6 +26,9 @@ void *send_kill_packet(void *arg)
 	}
 }
 
+/**
+ * 사용자가 선택한 노드에 대해서 MAC 주소를 변경하여 ARP Packet을 만들어주는 함수.
+ */
 unsigned char* make_kill_packet(device_info gate_info, u_char gate_last_addr, u_char dest_last_addr)
 {
 	static unsigned char pack_data[42];
@@ -64,6 +74,9 @@ unsigned char* make_kill_packet(device_info gate_info, u_char gate_last_addr, u_
 	return pack_data;
 }
 
+/**
+ * geteway의 MAC주소를 알아내는 함수.
+ */
 int gateway_get(const unsigned char *packet, u_char gate_ip, device_info *dev_gate)
 {
 	etherhdr_t *ether = (etherhdr_t*)(packet);

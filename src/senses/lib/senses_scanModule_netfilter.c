@@ -1,4 +1,8 @@
-﻿#include <linux/ip.h>             
+﻿/**
+ * Senses Kernel Netfilter
+ * @author Kwon HoeGeun
+ */
+#include <linux/ip.h>             
 #include <linux/kernel.h> 
 #include <linux/module.h> 
 #include <linux/netdevice.h>      
@@ -21,6 +25,9 @@
 
 MODULE_LICENSE("GPL");
 
+/**
+ * ARP Header를 재정의 한 구조체
+ */
 typedef struct arphdr_t {
 	__be16      ar_hrd;     /* format of hardware address   */
 	__be16      ar_pro;     /* format of protocol address   */
@@ -34,7 +41,6 @@ typedef struct arphdr_t {
 	unsigned char       ar_tip[4];      /* target ip address        */
 }arphdr_t;
 
-
 unsigned int main_hook(unsigned int hooknum,  
 						struct sk_buff *skb,
 						const struct net_device *in,
@@ -42,6 +48,9 @@ unsigned int main_hook(unsigned int hooknum,
 						int (*okfn)(struct sk_buff*)
 						);
 
+/**
+ * Netfilter에서 tcp와 arp를 동시에 필터링 하기위한 구조체.
+ */
 static struct nf_hook_ops netfilter_ops[] = {
 	{
 		.hook           = main_hook,
@@ -68,6 +77,9 @@ struct tcphdr *tcp_header;
 //int dadd,sadd,bit1,bit2,bit3,bit4;
 struct net_device * dev;
 
+/**
+ * 트레픽을 판별하여 KFIFO에 삽입하는 함수.
+ */
 void print_traffic(void) {
 	char buf[SIZE];
 	int i = 0;
@@ -109,6 +121,9 @@ void print_traffic(void) {
 	//send_myfifo("../bin/read_sense", buf);
 }
 
+/**
+ * ARP 생존 유무를 판별하여 KFIFO에 삽입하는 함수.
+ */
 void print_arp(void)
 {
 	int i = 0;
@@ -137,7 +152,9 @@ void print_arp(void)
 	return ;
 }
 
-/* Function prototype in <linux/netfilter> */
+/**
+ * Ethernet으로 들어온 패킷이 있으면 실행되는 함수.(이 함수에서 print_* 함수를 호출한다)
+ */
 unsigned int main_hook(unsigned int hooknum,  
 						struct sk_buff *skb,
 						const struct net_device *in,
@@ -176,6 +193,9 @@ unsigned int main_hook(unsigned int hooknum,
 	return NF_ACCEPT;
 }
 
+/**
+ * 모듈을 실행하는 함수.(실행시에 Netfilter Module을 삽입한다.
+ */
 int init_module(void)
 {
 	nf_register_hooks(netfilter_ops, ARRAY_SIZE(netfilter_ops));
@@ -183,6 +203,9 @@ int init_module(void)
 	return 0;
 }
 
+/**
+ * 모듈 종료될때 실행하는 함수.(실행시에 Netfilter Module을 제거한다..
+ */
 void cleanup_module(void)
 {
 	printk("test_cleanup_1\n");

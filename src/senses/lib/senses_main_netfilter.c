@@ -1,3 +1,7 @@
+/**
+ * Senses Main Netfilter Process
+ * @author Kwon HoeGeun
+ */
 #include <stdio.h>
 
 #include "../include/senses_networkScan_netfilter.h"
@@ -39,6 +43,9 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+/**
+ * brain 으로부터 전달되는 명령어를 fifo를 통하여 처리하는 함수.
+ */
 void receiver_fifo(network_grub_args *n_args)
 {
 	int pipeFd = 0;
