@@ -1,3 +1,17 @@
+/**
+ * port scan을 위한 file
+ *
+ * @author  김경민 <speedwall@jjssm.org>
+ *
+ * 보다 빠른 port scan을 위해서 새로운 방식을 적용하였다.
+ * 모든 포트를 scan하기 보다는 많이 사용되는 특정 port 를 선정하여 scan을 시도한다.
+ * 실제 nmap의 port scan이 빠른 이유도 이와 같다.
+ * 또한, 연결 방식도 nonblock으로 socket을 세팅하고
+ * 연결 요청 후에 기다리는 것이 아니라 2번을 연결해봐서 connection이 존재하는지 확인하는 형태이다
+ * 
+ */
+ 
+
 #include "../include/senses_portscan_libpcap.h"
 
 /* 최대로 SCAN할 주소 값 */
