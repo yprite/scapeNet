@@ -1,3 +1,7 @@
+/**
+ * Brain QOS Mysql
+ * @author Kim YongHun
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +11,9 @@
 
 
 #define BUFFER_SIZE 255
-
+/**
+ * Brain Qos 관리 함수 
+ */
 
 int main(){
 	
