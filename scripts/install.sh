@@ -205,9 +205,9 @@ create_binary() {
 	
 	if [ $_module = "NetFilter" ]
 	then
-		cd ../src/senses; sudo make -f Makefile_netfilter; cd -
+		cd ../src/senses; sudo make -f Makefile_netfilter clean; sudo make -f Makefile_netfilter; cd -
 	else
-		cd ../src/senses; sudo make -f Makefile_libpcap; cd -
+		cd ../src/senses; sudo make -f Makefile_libpcap clean; sudo make -f Makefile_libpcap; cd -
 	fi
 
 	cd ../src/brain; sudo make -f Makefile_mysql2 clean; sudo make -f Makefile_mysql2; cd -
@@ -236,10 +236,8 @@ create_table() {
 	echo 100; } | dialog --gauge "Please wait for create database table..." 6 60 0
 
 	# qos 설정
-	sudo ./qos_setting.sh
-	sudo cp ./interfaces /etc/network/interfaces
-	sudo /etc/init.d/networking restart 
-
+	#sudo ./qos_setting.sh
+	#sudo cp ./interfaces /etc/network/interfaces
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 5 / 5 >"\
@@ -257,9 +255,9 @@ create_table() {
 system_restart() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< The NMS for ALL >"\
-		--yes-label "Restart"\
+		--yes-label "Reboot"\
 		--no-label "Cancel"\
-		--yesno "Install succeeded!\nScapenet needs to start the administrator ID, Password and system IP Class. Look at the below that default value.\n\nIP Class : 210.118.34.*\nID : admin\nPW : 1234\n\nDo you want to restart now?" 0 0 2>$_temp
+		--yesno "Install succeeded!\nScapenet needs to start the administrator ID, Password and system IP Class. Look at the below that default value.\n\nIP Class : 210.118.34.*\nID : admin\nPW : 1234\n\nDo you want to reboot now?" 0 0 2>$_temp
 
 	case $? in
 		0) sudo reboot; exit 0;;
