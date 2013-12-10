@@ -133,7 +133,7 @@ select_DB() {
 #
 check_package() {
 	if [ -e $_package ]; then rm $_package; fi
-	for packageName in libpcap-dev apache2 libapache2-mod-php5 php5 php5-cli php5-mysql php5-gd php5-xmlrpc php5-intl php5-memcache mysql-server mysql-client libmysqlclient-dev 
+	for packageName in libpcap-dev apache2 libapache2-mod-php5 php5 php5-cli php5-mysql php5-gd php5-xmlrpc php5-intl php5-memcache mysql-server mysql-client libmysqlclient-dev bridge-utils 
 	do
 		check=`dpkg -l | grep -w $packageName | awk '{print $2}' | grep -w $packageName`
 		if [ "$check" = "" ]
@@ -181,6 +181,7 @@ check_package() {
 # @brief 설치하지 않은 패키지를 설치.
 #
 install_package() {
+	echo ""
 	for package in `cat $_package`; do
 		sudo apt-get install $package -y
 	done < $_package
@@ -197,7 +198,7 @@ install_package() {
 # @brief 
 #
 create_binary() {
-
+	echo ""
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 4 / 5 >"\
 		--msgbox "\n     now, create binary files." 7 40
@@ -235,8 +236,10 @@ create_table() {
 	echo 100; } | dialog --gauge "Please wait for create database table..." 6 60 0
 
 	# qos 설정
-	./bridge_setting.sh
-	./qos_setting.sh
+	sudo ./qos_setting.sh
+	sudo cp ./interfaces /etc/network/interfaces
+	sudo /etc/init.d/networking restart 
+
 
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< 5 / 5 >"\
@@ -244,22 +247,22 @@ create_table() {
 
 	if [ $? -ne 0 ]; then set_package; fi
 
-	service_start
+	system_restart
 }
 
 
 #
-# @brief 서비스 지금 실행할꺼야??
+# @brief 시스템 재부팅 요청
 #
-service_start() {
+system_restart() {
 	dialog --backtitle "Samsung Software Membership FIRESALE present The SCAPENET V$VER"\
 		--title "< The NMS for ALL >"\
-		--yes-label "Start"\
+		--yes-label "Restart"\
 		--no-label "Cancel"\
-		--yesno "Install succeeded!\nScapenet needs to start the administrator ID, Password and system IP Class. Look at the below that default value.\n\nIP Class : 210.118.34.*\nID : admin\nPW : 1234\n\nDo you want to run now?" 0 0 2>$_temp
+		--yesno "Install succeeded!\nScapenet needs to start the administrator ID, Password and system IP Class. Look at the below that default value.\n\nIP Class : 210.118.34.*\nID : admin\nPW : 1234\n\nDo you want to restart now?" 0 0 2>$_temp
 
 	case $? in
-		0) ./run.sh; exit 0;;
+		0) sudo reboot; exit 0;;
 		1) set_package;;
 		255) set_package;;
 	esac
