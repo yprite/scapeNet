@@ -1,0 +1,19 @@
+  auto lo br0
+   iface lo inet loopback
+
+ # Set up interfaces manually, avoiding conflicts with, e.g., network manager
+   iface eth1 inet manual
+      up ifconfig eth1 up promisc
+      down ifconfig eth1 down promisc
+   iface eth0 inet manual
+      up ifconfig eth0 up promisc
+      down ifconfig eth0 down promisc
+
+ # Bridge setup
+   iface br0 inet static
+   bridge_ports eth0 eth1
+   address 210.118.34.252
+   broadcast 210.118.34.255
+   netmask 255.255.255.0
+   gateway 210.118.34.1
+   dns-nameservers 8.8.8.8 8.8.4.4
