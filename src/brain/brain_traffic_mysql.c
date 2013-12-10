@@ -1,3 +1,8 @@
+/**
+ * Brain Traffic Mysql
+ * Author Kim Yonghun
+ */
+
 #include "include/brain_mysql.h" 
 
 #define UP_LIMIT 4000
@@ -7,6 +12,9 @@ volatile int up_traffic[BUFFER_SIZE],down_traffic[BUFFER_SIZE];
 int isOn;
 pthread_mutex_t lock;
 
+/**
+ * Brain CheckTraffic 관리 함수 
+ */
 void *CheckTraffic(void *arg){
 
 	while(1){
@@ -65,6 +73,9 @@ void *CheckTraffic(void *arg){
 		isOn=1;
 	}
 }
+/**
+ * Brain Pipe 전달 함수 
+ */
 
 int main(){
 
