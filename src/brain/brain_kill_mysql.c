@@ -1,7 +1,14 @@
+/**
+ * Brain killl Mysql
+ * @author KimYongHun
+ */
 #include "include/brain_mysql.h" 
 
 
-
+/**
+ * Brain Arp Mysql
+ * 노드 킬 패스 부분 설정
+ */
 
 int main(){
 	
