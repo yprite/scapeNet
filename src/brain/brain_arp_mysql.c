@@ -1,9 +1,15 @@
+/**
+ * Brain Arp Mysql
+ * @author KimYongHun
+ */
 #include "include/brain_mysql.h"
 
 char *query_head = "UPDATE ip_data SET isStatus =CASE";
 char *query_leg = "else '0' END WHERE isStatus IN(0,1)";
 char query_result[3000];
-
+/**
+*	Brain 부분에서 ARP 테이블 갱신 
+*/
 int main(){
 
 	int readn=0;
