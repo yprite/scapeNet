@@ -1,7 +1,8 @@
   auto lo br0
    iface lo inet loopback
 
- # Set up interfaces manually, avoiding conflicts with, e.g., network manager
+ # bridge에서 사용할 interface를 생성한다. 
+ # 각 interface는 들어오는 모든 packet을 받을 수 있도록 Promiscuous mode로 설정한다.
    iface eth1 inet manual
       up ifconfig eth1 up promisc
       down ifconfig eth1 down promisc
